@@ -9,3 +9,78 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Aluno {
+  matricula Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  status    Status      @default(ATIVO)
+  curso     Curso?
+  Avaliacao Avaliacao[]
+}
+
+model Curso {
+  id      Int   @id @default(autoincrement())
+  codigo  Int   @unique
+  aluno   Aluno @relation(fields: [alunoId], references: [matricula], map: "Curso_alunoId_fkey")
+  alunoId Int   @unique
+}
+
+model Turma {
+  codigo          Int           @id @default(autoincrement())
+  nomeProfessor   String
+  periodoLetivo   PeriodoLetivo @relation(fields: [periodoLetivoId], references: [id])
+  periodoLetivoId Int
+  horario         String
+  Disciplina      Disciplina    @relation(fields: [disciplinaId], references: [id])
+  disciplinaId    Int           @unique
+  Avaliacao       Avaliacao[]
+}
+
+model PeriodoLetivo {
+  id         Int      @id @default(autoincrement())
+  Turma      Turma[]
+  dataInicio DateTime
+  dataFim    DateTime
+  status     Status   @default(ATIVO)
+}
+
+model Disciplina {
+  id               Int          @id @default(autoincrement())
+  nome             String       @unique
+  cargaHoraria     Int
+  nomeDepartamento String
+  nivel            Nivel        @default(BACHARELADO)
+  preRequisitos    Disciplina[] @relation("DisciplinaToDisciplina")
+  Turma            Turma[]
+  Disciplina       Disciplina?  @relation("DisciplinaToDisciplina", fields: [disciplinaId], references: [id])
+  disciplinaId     Int?
+}
+
+model Avaliacao {
+  id             Int      @id @default(autoincrement())
+  aluno          Aluno    @relation(fields: [matriculaAluno], references: [matricula])
+  matriculaAluno Int
+  turma          Turma    @relation(fields: [codigoTurma], references: [codigo])
+  codigoTurma    Int
+  grauFinal      String
+  situacao       Situacao @default(APROVADO)
+}
+
+enum Status {
+  ATIVO
+  INATIVO
+}
+
+enum Nivel {
+  BACHARELADO
+  LICENCIATURA
+  MESTRADO
+  DOUTORADO
+}
+
+enum Situacao {
+  APROVADO
+  REPROVADO_NOTA
+  REPROVADO_FALTAS
+}
