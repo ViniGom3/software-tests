@@ -4,6 +4,12 @@
     "outDir": "dist",
     "strict": true,
     "lib": ["esnext"],
-    "esModuleInterop": true
-  }
+    "esModuleInterop": true,
+    "allowJs": true,
+    "module": "commonjs",
+    "typeRoots": [ "@types" ]
+
+  },
+"include": ["src/**/*", "@types"],
+"exclude": ["**/*.spec.ts"]
 }

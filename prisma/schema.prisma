@@ -15,15 +15,16 @@ model Aluno {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   status    Status      @default(ATIVO)
-  curso     Curso?
+  curso     Curso?      @relation(fields: [cursoId], references: [id])
   Avaliacao Avaliacao[]
+  cursoId   Int?
 }
 
 model Curso {
-  id      Int   @id @default(autoincrement())
-  codigo  Int   @unique
-  aluno   Aluno @relation(fields: [alunoId], references: [matricula], map: "Curso_alunoId_fkey")
-  alunoId Int   @unique
+  id     Int     @id @default(autoincrement())
+  nome   String
+  codigo Int     @unique
+  alunos Aluno[]
 }
 
 model Turma {
