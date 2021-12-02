@@ -23,7 +23,10 @@ export function ErrorMiddleware(
   next: NextFunction,
 ) {
   console.log('error: ', error);
-  const status = error.code || FAILURE_CODE_ERROR.SERVERERROR;
+  const status =
+    error.code && Number.isInteger(error.code)
+      ? error.code
+      : FAILURE_CODE_ERROR.SERVERERROR;
   const response = error.message || FAILURE_MESSAGE.SERVERERROR;
   res.status(status).json(response);
 }
