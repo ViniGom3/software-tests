@@ -13,6 +13,7 @@ CREATE TABLE "Aluno" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "status" "Status" NOT NULL DEFAULT E'ATIVO',
+    "cursoId" INTEGER,
 
     CONSTRAINT "Aluno_pkey" PRIMARY KEY ("matricula")
 );
@@ -20,8 +21,8 @@ CREATE TABLE "Aluno" (
 -- CreateTable
 CREATE TABLE "Curso" (
     "id" SERIAL NOT NULL,
+    "nome" TEXT NOT NULL,
     "codigo" INTEGER NOT NULL,
-    "alunoId" INTEGER NOT NULL,
 
     CONSTRAINT "Curso_pkey" PRIMARY KEY ("id")
 );
@@ -64,7 +65,7 @@ CREATE TABLE "Avaliacao" (
     "id" SERIAL NOT NULL,
     "matriculaAluno" INTEGER NOT NULL,
     "codigoTurma" INTEGER NOT NULL,
-    "grauFinal" TEXT NOT NULL,
+    "grauFinal" INTEGER NOT NULL,
     "situacao" "Situacao" NOT NULL DEFAULT E'APROVADO',
 
     CONSTRAINT "Avaliacao_pkey" PRIMARY KEY ("id")
@@ -74,16 +75,16 @@ CREATE TABLE "Avaliacao" (
 CREATE UNIQUE INDEX "Curso_codigo_key" ON "Curso"("codigo");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Curso_alunoId_key" ON "Curso"("alunoId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Turma_disciplinaId_key" ON "Turma"("disciplinaId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Disciplina_nome_key" ON "Disciplina"("nome");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Avaliacao_matriculaAluno_codigoTurma_key" ON "Avaliacao"("matriculaAluno", "codigoTurma");
+
 -- AddForeignKey
-ALTER TABLE "Curso" ADD CONSTRAINT "Curso_alunoId_fkey" FOREIGN KEY ("alunoId") REFERENCES "Aluno"("matricula") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Aluno" ADD CONSTRAINT "Aluno_cursoId_fkey" FOREIGN KEY ("cursoId") REFERENCES "Curso"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Turma" ADD CONSTRAINT "Turma_periodoLetivoId_fkey" FOREIGN KEY ("periodoLetivoId") REFERENCES "PeriodoLetivo"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

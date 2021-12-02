@@ -61,11 +61,12 @@ model Disciplina {
 model Avaliacao {
   id             Int      @id @default(autoincrement())
   aluno          Aluno    @relation(fields: [matriculaAluno], references: [matricula])
-  matriculaAluno Int
+  matriculaAluno Int  
   turma          Turma    @relation(fields: [codigoTurma], references: [codigo])
   codigoTurma    Int
-  grauFinal      String
+  grauFinal      Int
   situacao       Situacao @default(APROVADO)
+  @@unique([matriculaAluno, codigoTurma])
 }
 
 enum Status {
