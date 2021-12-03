@@ -44,4 +44,20 @@ router.post('/', async (req, res, next) => {
   }
 });
 
+router.delete('/', async (req, res, next) => {
+  try {
+    const { codigo } = req.body;
+
+    const disciplina = await prisma.disciplina.delete({
+      where: {
+        codigo,
+      },
+    });
+
+    res.json(disciplina);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
