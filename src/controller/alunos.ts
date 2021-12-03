@@ -1,16 +1,7 @@
 import { Router } from 'express';
 import prisma from '../prisma';
-import argon2 from 'argon2';
 import { Exception } from '../error';
 import { calcularIra } from '../services/alunos';
-
-export const hashing = async function (value: string) {
-  return await argon2.hash(value);
-};
-
-export const verify = async function (hash: string, plaintext: string) {
-  return await argon2.verify(hash, plaintext);
-};
 
 const router = Router();
 
@@ -32,6 +23,9 @@ router.post('/', async (req, res, next) => {
   try {
     const { matricula } = req.body;
 
+    if (!matricula)
+      throw new Exception(400, 'O parametro "matricula" é obrigatorio');
+
     const aluno = await prisma.aluno.create({
       data: {
         matricula: matricula,
@@ -48,6 +42,9 @@ router.delete('/', async (req, res, next) => {
   try {
     const { matricula } = req.body;
 
+    if (!matricula)
+      throw new Exception(400, 'O parametro "matricula" é obrigatorio');
+
     const aluno = await prisma.aluno.delete({
       where: {
         matricula: matricula,
@@ -63,6 +60,12 @@ router.delete('/', async (req, res, next) => {
 router.patch('/', async (req, res, next) => {
   try {
     const { matricula, cursoId } = req.body;
+
+    if (!matricula)
+      throw new Exception(400, 'O parametro "matricula" é obrigatorio');
+
+    if (!cursoId)
+      throw new Exception(400, 'O parametro "cursoId" é obrigatorio');
 
     const aluno = await prisma.aluno.update({
       where: {
@@ -118,7 +121,7 @@ router.get('/:matricula/ira', async (req, res, next) => {
 
     const IRA = calcularIra(avaliacao);
 
-    res.json({ IRA});
+    res.json({ IRA });
   } catch (error) {
     next(error);
   }
@@ -155,7 +158,7 @@ router.get('/:matricula/:id_periodo/ira', async (req, res, next) => {
 
     const IRA = calcularIra(avaliacao);
 
-    res.json({ IRA});
+    res.json({ IRA });
   } catch (error) {
     next(error);
   }
