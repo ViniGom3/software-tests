@@ -60,4 +60,26 @@ router.delete('/', async (req, res, next) => {
   }
 });
 
+router.patch('/', async (req, res, next) => {
+  try {
+    const { codigo, nome, cargaHoraria, nomeDepartamento, nivel } = req.body;
+
+    const disciplina = await prisma.disciplina.update({
+      where: {
+        codigo,
+      },
+      data: {
+        nome,
+        cargaHoraria,
+        nomeDepartamento,
+        nivel,
+      },
+    });
+
+    res.json(disciplina);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
