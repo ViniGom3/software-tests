@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('/', async (_, res, next) => {
   try {
-    const allAlunos = await prisma.aluno.findMany({});
+    const allAlunos = await prisma.aluno.findMany();
 
     res.json(allAlunos);
   } catch (error) {
