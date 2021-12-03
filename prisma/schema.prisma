@@ -33,8 +33,8 @@ model Turma {
   periodoLetivo   PeriodoLetivo @relation(fields: [periodoLetivoId], references: [id])
   periodoLetivoId Int
   horario         String
-  Disciplina      Disciplina    @relation(fields: [disciplinaId], references: [id])
-  disciplinaId    Int           
+  Disciplina      Disciplina    @relation(fields: [disciplinaId], references: [codigo])
+  disciplinaId    Int
   Avaliacao       Avaliacao[]
 }
 
@@ -47,26 +47,24 @@ model PeriodoLetivo {
 }
 
 model Disciplina {
-  id               Int          @id @default(autoincrement())
+  codigo           Int          @id @default(autoincrement())
   nome             String       @unique
   cargaHoraria     Int
   nomeDepartamento String
   nivel            Nivel        @default(BACHARELADO)
-  preRequisitos    Disciplina[] @relation("DisciplinaToDisciplina")
+  preRequisitos    Disciplina[] @relation("PreRequisito", references: [codigo])
+  IsPreRequisito   Disciplina[] @relation("PreRequisito", references: [codigo])
   Turma            Turma[]
-  Disciplina       Disciplina?  @relation("DisciplinaToDisciplina", fields: [disciplinaId], references: [id])
-  disciplinaId     Int?
 }
 
 model Avaliacao {
   id             Int      @id @default(autoincrement())
   aluno          Aluno    @relation(fields: [matriculaAluno], references: [matricula])
-  matriculaAluno Int  
+  matriculaAluno Int
   turma          Turma    @relation(fields: [codigoTurma], references: [codigo])
   codigoTurma    Int
   grauFinal      Int
   situacao       Situacao @default(APROVADO)
-  // @@unique([matriculaAluno, codigoTurma])
 }
 
 enum Status {

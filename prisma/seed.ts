@@ -61,7 +61,7 @@ async function main() {
   });
   await prisma.disciplina.create({
     data: {
-      id: 0,
+      codigo: 0,
       nome: 'Topicos Especiais em Sistemas de Informação',
       cargaHoraria: 60,
       nomeDepartamento: 'Departamento de Computação',
