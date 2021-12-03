@@ -2,6 +2,7 @@ import { Router } from 'express';
 import prisma from '../prisma';
 import argon2 from 'argon2';
 import { Exception } from '../error';
+import { calcularIra } from '../services/alunos';
 
 export const hashing = async function (value: string) {
   return await argon2.hash(value);
@@ -115,17 +116,9 @@ router.get('/:matricula/ira', async (req, res, next) => {
       },
     });
 
-    const sumAllExames = avaliacao.reduce(
-      (acc, value) =>
-        acc + value.grauFinal * value.turma.Disciplina.cargaHoraria,
-      0,
-    );
-    const sumAllHour = avaliacao.reduce(
-      (acc, value) => acc + value.turma.Disciplina.cargaHoraria,
-      0,
-    );
+    const IRA = calcularIra(avaliacao);
 
-    res.json({ IRA: sumAllExames / sumAllHour });
+    res.json({ IRA});
   } catch (error) {
     next(error);
   }
@@ -160,17 +153,9 @@ router.get('/:matricula/:id_periodo/ira', async (req, res, next) => {
       },
     });
 
-    const sumAllExames = avaliacao.reduce(
-      (acc, value) =>
-        acc + value.grauFinal * value.turma.Disciplina.cargaHoraria,
-      0,
-    );
-    const sumAllHour = avaliacao.reduce(
-      (acc, value) => acc + value.turma.Disciplina.cargaHoraria,
-      0,
-    );
+    const IRA = calcularIra(avaliacao);
 
-    res.json({ IRA: sumAllExames / sumAllHour });
+    res.json({ IRA});
   } catch (error) {
     next(error);
   }
