@@ -14,7 +14,7 @@ export const verify = async function (hash: string, plaintext: string) {
 
 const router = Router();
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (_, res, next) => {
   try {
     const allAlunos = await prisma.aluno.findMany({
       select: {
@@ -79,7 +79,7 @@ router.patch('/', async (req, res, next) => {
   }
 });
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (_, res, next) => {
   try {
     const allAlunos = await prisma.aluno.findMany({
       select: {
