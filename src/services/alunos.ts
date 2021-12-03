@@ -1,7 +1,7 @@
 import { Avaliacao, Disciplina } from '.prisma/client';
 import argon2 from 'argon2';
 
-export type AvaliacaoService = Pick<Avaliacao, 'grauFinal'> & {
+type AvaliacaoService = Pick<Avaliacao, 'grauFinal'> & {
   turma: {
     Disciplina: Pick<Disciplina, 'cargaHoraria'>;
   };
