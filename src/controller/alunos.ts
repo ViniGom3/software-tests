@@ -26,7 +26,18 @@ router.post('/', async (req, res, next) => {
     if (!matricula)
       throw new Exception(400, 'O parametro "matricula" é obrigatorio');
 
-    const aluno = await prisma.aluno.create({
+    let aluno = await prisma.aluno.findUnique({
+      where: {
+        matricula,
+      },
+    });
+
+    if (aluno) {
+      res.json(aluno);
+      return;
+    }
+
+    aluno = await prisma.aluno.create({
       data: {
         matricula: matricula,
       },
