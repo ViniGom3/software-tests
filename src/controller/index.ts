@@ -2,6 +2,7 @@ import { Express } from 'express';
 import { ErrorMiddleware } from '../middlewares';
 import Aluno from './alunos';
 import Disciplina from './disciplina';
+import Turma from './turma';
 
 export const setupRoutes = (app: Express): void => {
   app.use('/aluno', Aluno);
@@ -10,7 +11,7 @@ export const setupRoutes = (app: Express): void => {
   app.use('/disciplina', Disciplina);
 
   // app.use(verifyRole);
-  // app.use("/turma", Turma);
+  app.use("/turma", Turma);
 
   // app.use(verifyAdmin);
   // app.use("/avaliacao", Avaliacao);

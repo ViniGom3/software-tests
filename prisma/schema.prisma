@@ -36,6 +36,7 @@ model Turma {
   Disciplina      Disciplina    @relation(fields: [disciplinaId], references: [codigo])
   disciplinaId    Int
   Avaliacao       Avaliacao[]
+  qtdVagas        Int           @default(0)
 }
 
 model PeriodoLetivo {

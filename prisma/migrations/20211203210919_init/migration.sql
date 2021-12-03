@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Turma" ADD COLUMN     "qtdVagas" INTEGER NOT NULL DEFAULT 0;
