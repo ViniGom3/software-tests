@@ -1,12 +1,13 @@
 import { Express } from 'express';
 import { ErrorMiddleware } from '../middlewares';
 import Aluno from './alunos';
+import Disciplina from './disciplina';
 
 export const setupRoutes = (app: Express): void => {
   app.use('/aluno', Aluno);
 
   // app.use(verifyJWT);
-  // app.use("/disciplina", Disciplina);
+  app.use('/disciplina', Disciplina);
 
   // app.use(verifyRole);
   // app.use("/turma", Turma);
