@@ -1,5 +1,7 @@
+import { Situacao } from '.prisma/client';
 import { Router } from 'express';
 import prisma from '../prisma';
+import { calcularMediaTurma } from '../services/turma';
 
 const router = Router();
 
@@ -15,7 +17,14 @@ router.get('/', async (_, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const { codigo, nomeProfessor, periodoLetivoId, disciplinaId, horario, qtdVagas} = req.body;
+    const {
+      codigo,
+      nomeProfessor,
+      periodoLetivoId,
+      disciplinaId,
+      horario,
+      qtdVagas,
+    } = req.body;
 
     let turma = await prisma.turma.findUnique({
       where: {
@@ -63,7 +72,14 @@ router.delete('/', async (req, res, next) => {
 
 router.patch('/', async (req, res, next) => {
   try {
-    const { codigo, nomeProfessor, periodoLetivoId, disciplinaId, horario, qtdVagas} = req.body;
+    const {
+      codigo,
+      nomeProfessor,
+      periodoLetivoId,
+      disciplinaId,
+      horario,
+      qtdVagas,
+    } = req.body;
 
     const turma = await prisma.turma.update({
       where: {
@@ -79,6 +95,28 @@ router.patch('/', async (req, res, next) => {
     });
 
     res.json(turma);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/:codigo/media', async (req, res, next) => {
+  try {
+    const { codigo } = req.params;
+    const codigoTurma = Number.parseInt(codigo);
+
+    const allTurma = await prisma.avaliacao.findMany({
+      where: {
+        codigoTurma,
+        situacao: {
+          not: Situacao.REPROVADO_FALTAS,
+        },
+      },
+    });
+
+    const MEDIA = calcularMediaTurma(allTurma);
+
+    res.json({ MEDIA });
   } catch (error) {
     next(error);
   }
