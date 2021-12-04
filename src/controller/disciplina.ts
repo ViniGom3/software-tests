@@ -47,7 +47,7 @@ router.post('/', async (req, res, next) => {
 router.delete('/:codigo_disciplina', async (req, res, next) => {
   try {
     const { codigo_disciplina } = req.params;
-    const codigo = parseInt(codigo_disciplina, 10);
+    const codigo = parseInt(codigo_disciplina);
 
     const disciplina = await prisma.disciplina.delete({
       where: {

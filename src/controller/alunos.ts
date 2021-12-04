@@ -47,16 +47,24 @@ router.post('/', async (req, res, next) => {
 
 router.delete('/:matricula_aluno', async (req, res, next) => {
   try {
-    const { matricula_aluno } = req.body;
+    const { matricula_aluno } = req.params;
 
     if (!matricula_aluno)
       throw new Exception(400, 'O parametro "matricula" é obrigatorio');
 
     const matricula = parseInt(matricula_aluno);
 
-    const aluno = await prisma.aluno.delete({
+    let aluno = await prisma.aluno.findUnique({
       where: {
-        matricula: matricula,
+        matricula,
+      },
+    });
+
+    if (!aluno) throw new Exception(404, 'Aluno não encontrado');
+
+    aluno = await prisma.aluno.delete({
+      where: {
+        matricula,
       },
     });
 
