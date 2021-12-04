@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { Exception } from '../error';
 import prisma from '../prisma';
+import { calcularIra } from '../services/alunos';
 
 const router = Router();
 
@@ -71,6 +72,59 @@ router.patch('/', async (req, res, next) => {
     });
 
     res.json(curso);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/:id_curso/ira', async (req, res, next) => {
+  try {
+    const { id_curso } = req.params;
+    const id = parseInt(id_curso);
+
+    const ultimosPeriodosLetivos = await prisma.periodoLetivo.findMany({
+      orderBy: {
+        dataFim: 'desc',
+      },
+      take: 4,
+      select: {
+        id: true,
+      },
+    });
+
+    const ultimosPeriodosLetivosIds = ultimosPeriodosLetivos.map(
+      periodos => periodos.id,
+    );
+
+    const turmasDoCursoNosUltimosPeriodos = await prisma.avaliacao.findMany({
+      where: {
+        aluno: {
+          cursoId: id,
+        },
+        turma: {
+          periodoLetivoId: {
+            in: ultimosPeriodosLetivosIds,
+          },
+        },
+      },
+      select: {
+        grauFinal: true,
+        situacao: true,
+        turma: {
+          select: {
+            Disciplina: {
+              select: {
+                cargaHoraria: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const IRA = calcularIra(turmasDoCursoNosUltimosPeriodos);
+
+    res.json({ IRA });
   } catch (error) {
     next(error);
   }
