@@ -7,9 +7,8 @@
     "esModuleInterop": true,
     "allowJs": true,
     "module": "commonjs",
-    "typeRoots": [ "@types" ]
-
+    "typeRoots": ["@types"]
   },
-"include": ["src/**/*", "@types"],
-"exclude": ["**/*.spec.ts"]
+  "include": ["src/**/*", "@types"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"]
 }
