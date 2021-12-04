@@ -26,18 +26,7 @@ router.post('/', async (req, res, next) => {
       qtdVagas,
     } = req.body;
 
-    let turma = await prisma.turma.findUnique({
-      where: {
-        codigo,
-      },
-    });
-
-    if (turma) {
-      res.json(turma);
-      return;
-    }
-
-    turma = await prisma.turma.create({
+    const turma = await prisma.turma.create({
       data: {
         codigo,
         nomeProfessor,
