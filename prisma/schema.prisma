@@ -60,9 +60,9 @@ model Disciplina {
 
 model Avaliacao {
   id             Int      @id @default(autoincrement())
-  aluno          Aluno    @relation(fields: [matriculaAluno], references: [matricula])
+  aluno          Aluno    @relation(fields: [matriculaAluno], references: [matricula], onDelete: Cascade)
   matriculaAluno Int
-  turma          Turma    @relation(fields: [codigoTurma], references: [codigo])
+  turma          Turma    @relation(fields: [codigoTurma], references: [codigo], onDelete: Cascade)
   codigoTurma    Int
   grauFinal      Int      @default(0)
   situacao       Situacao @default(REPROVADO_NOTA)
