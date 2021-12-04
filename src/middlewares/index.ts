@@ -1,7 +1,7 @@
 import { json, Express, NextFunction, Request, Response } from 'express';
 import jsonwebtoken from 'jsonwebtoken';
 import cors from 'cors';
-import { FAILURE_CODE_ERROR, FAILURE_MESSAGE } from '../status-code';
+import { FAILURE_CODE_ERROR, FAILURE_MESSAGE } from '../error';
 import { Exception } from '../error';
 
 const bodyParser = json();
