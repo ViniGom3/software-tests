@@ -41,15 +41,15 @@ async function main() {
   });
   await prisma.periodoLetivo.create({
     data: {
-      dataInicio: new Date('2021-01-01T08:00:00'),
+      dataInicio: new Date('2021-01-01T00:00:00'),
       dataFim: new Date('2021-06-30T23:59:59'),
       status: 'ATIVO',
     },
   });
   await prisma.periodoLetivo.create({
     data: {
-      dataInicio: new Date('2021-01-01T08:00:00'),
-      dataFim: new Date('2021-06-30T23:59:59'),
+      dataInicio: new Date('2021-07-01T00:00:00'),
+      dataFim: new Date('2021-12-31T23:59:59'),
       status: 'ATIVO',
     },
   });
