@@ -18,19 +18,7 @@ router.post('/', async (req, res, next) => {
   try {
     const { matriculaAluno, codigoTurma, grauFinal, situacao } = req.body;
 
-    let avaliacao = await prisma.avaliacao.findFirst({
-      where: {
-        matriculaAluno,
-        codigoTurma,
-      },
-    });
-
-    if (avaliacao) {
-      res.json(avaliacao);
-      return;
-    }
-
-    avaliacao = await prisma.avaliacao.create({
+    const avaliacao = await prisma.avaliacao.create({
       data: {
         matriculaAluno,
         codigoTurma,
