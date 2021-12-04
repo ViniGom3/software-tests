@@ -54,9 +54,10 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.delete('/', async (req, res, next) => {
+router.delete('/:codigo_turma', async (req, res, next) => {
   try {
-    const { codigo } = req.body;
+    const { codigo_turma } = req.params;
+    const codigo = parseInt(codigo_turma);
 
     const turma = await prisma.turma.delete({
       where: {
@@ -103,7 +104,7 @@ router.patch('/', async (req, res, next) => {
 router.get('/:codigo/media', async (req, res, next) => {
   try {
     const { codigo } = req.params;
-    const codigoTurma = Number.parseInt(codigo);
+    const codigoTurma = parseInt(codigo);
 
     const allTurma = await prisma.avaliacao.findMany({
       where: {
@@ -126,7 +127,7 @@ router.post('/:codigo/inscricao', async (req, res, next) => {
   try {
     const { matricula } = req.body;
     const { codigo } = req.params;
-    const codigoTurma = Number.parseInt(codigo);
+    const codigoTurma = parseInt(codigo);
 
     const turma = await prisma.turma.findUnique({
       where: {

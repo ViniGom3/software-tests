@@ -45,12 +45,14 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.delete('/', async (req, res, next) => {
+router.delete('/:matricula_aluno', async (req, res, next) => {
   try {
-    const { matricula } = req.body;
+    const { matricula_aluno } = req.body;
 
-    if (!matricula)
+    if (!matricula_aluno)
       throw new Exception(400, 'O parametro "matricula" é obrigatorio');
+
+    const matricula = parseInt(matricula_aluno);
 
     const aluno = await prisma.aluno.delete({
       where: {
@@ -106,7 +108,7 @@ router.get('/', async (_, res, next) => {
 router.get('/:matricula/ira', async (req, res, next) => {
   try {
     const { matricula } = req.params;
-    const matriculaAluno = Number.parseInt(matricula);
+    const matriculaAluno = parseInt(matricula);
 
     const avaliacao = await prisma.avaliacao.findMany({
       where: {
@@ -137,8 +139,8 @@ router.get('/:matricula/ira', async (req, res, next) => {
 router.get('/:matricula/:id_periodo/ira', async (req, res, next) => {
   try {
     const { matricula, id_periodo } = req.params;
-    const matriculaAluno = Number.parseInt(matricula);
-    const periodId = Number.parseInt(id_periodo);
+    const matriculaAluno = parseInt(matricula);
+    const periodId = parseInt(id_periodo);
 
     const avaliacao = await prisma.avaliacao.findMany({
       where: {
