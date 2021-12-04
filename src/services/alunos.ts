@@ -1,7 +1,7 @@
 import { Avaliacao, Disciplina } from '.prisma/client';
 import argon2 from 'argon2';
 
-type AvaliacaoService = Pick<Avaliacao, 'grauFinal'> & {
+type AvaliacaoService = Pick<Avaliacao, 'grauFinal' | 'situacao'> & {
   turma: {
     Disciplina: Pick<Disciplina, 'cargaHoraria'>;
   };
@@ -9,9 +9,13 @@ type AvaliacaoService = Pick<Avaliacao, 'grauFinal'> & {
 
 export const calcularIra = (avaliacao: AvaliacaoService[]) => {
   const sumAllExames = avaliacao.reduce(
-    (acc, value) => acc + value.grauFinal * value.turma.Disciplina.cargaHoraria,
+    (acc, value) =>
+      acc +
+      value.turma.Disciplina.cargaHoraria *
+        (value.situacao === 'REPROVADO_FALTAS' ? 0 : value.grauFinal),
     0,
   );
+
   const sumAllHour = avaliacao.reduce(
     (acc, value) => acc + value.turma.Disciplina.cargaHoraria,
     0,

@@ -124,6 +124,7 @@ router.get('/:matricula/ira', async (req, res, next) => {
       },
       select: {
         grauFinal: true,
+        situacao: true,
         turma: {
           select: {
             Disciplina: {
@@ -161,6 +162,7 @@ router.get('/:matricula/:id_periodo/ira', async (req, res, next) => {
       },
       select: {
         grauFinal: true,
+        situacao: true,
         turma: {
           select: {
             Disciplina: {
