@@ -64,8 +64,8 @@ model Avaliacao {
   matriculaAluno Int
   turma          Turma    @relation(fields: [codigoTurma], references: [codigo])
   codigoTurma    Int
-  grauFinal      Int
-  situacao       Situacao @default(APROVADO)
+  grauFinal      Int      @default(0)
+  situacao       Situacao @default(REPROVADO_NOTA)
 }
 
 enum Status {

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Avaliacao" ALTER COLUMN "grauFinal" SET DEFAULT 0,
+ALTER COLUMN "situacao" SET DEFAULT E'REPROVADO_NOTA';
