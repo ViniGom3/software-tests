@@ -5,6 +5,7 @@ import Disciplina from './disciplina';
 import Avaliacao from './avaliacao';
 import Turma from './turma';
 import Curso from './curso';
+import PeriodoLetivo from './periodo';
 
 export const setupRoutes = (app: Express): void => {
   app.use('/aluno', Aluno);
@@ -17,7 +18,7 @@ export const setupRoutes = (app: Express): void => {
 
   app.use('/curso', Curso);
 
-  // app.use("/periodo_letivo", PeriodoLetivo);
+  app.use('/periodo', PeriodoLetivo);
 
   app.use(ErrorMiddleware);
 };
