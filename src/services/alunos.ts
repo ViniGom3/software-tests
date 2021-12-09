@@ -1,5 +1,4 @@
 import { Avaliacao, Disciplina } from '.prisma/client';
-import argon2 from 'argon2';
 
 type AvaliacaoService = Pick<Avaliacao, 'grauFinal' | 'situacao'> & {
   turma: {
@@ -22,12 +21,4 @@ export const calcularIra = (avaliacao: AvaliacaoService[]) => {
   );
 
   return sumAllExames / sumAllHour;
-};
-
-export const hashing = async function (value: string) {
-  return await argon2.hash(value);
-};
-
-export const verify = async function (hash: string, plaintext: string) {
-  return await argon2.verify(hash, plaintext);
 };
