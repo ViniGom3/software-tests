@@ -1,6 +1,7 @@
+import prisma from '../prisma';
 import { Aluno } from '.prisma/client';
 import { Exception } from '../error';
-import prisma from '../prisma';
+import { calcularIra } from '../utils/alunos';
 
 export const getAllAlunos = () => {
   return prisma.aluno.findMany();
@@ -34,4 +35,78 @@ export const deleteAluno = async (matric: string) => {
       matricula,
     },
   });
+};
+
+export const updateAluno = async (aluno: Aluno) => {
+  if (!(aluno.matricula && (await getAlunoById(aluno.matricula))))
+    throw new Exception(404, 'Aluno não encontrado');
+
+  return prisma.aluno.update({
+    where: {
+      matricula: aluno.matricula,
+    },
+    data: aluno,
+  });
+};
+
+export const getIraByAluno = async (matricula: string) => {
+  const matriculaAluno = parseInt(matricula);
+
+  if (!(await getAlunoById(matriculaAluno)))
+    throw new Exception(404, 'Aluno não encontrado');
+
+  const avaliacao = await prisma.avaliacao.findMany({
+    where: {
+      matriculaAluno,
+    },
+    select: {
+      grauFinal: true,
+      situacao: true,
+      turma: {
+        select: {
+          Disciplina: {
+            select: {
+              cargaHoraria: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return { ira: calcularIra(avaliacao) };
+};
+
+export const getIraByPeriod = async (matricula: string, periodo: string) => {
+  const matriculaAluno = parseInt(matricula);
+  const periodId = parseInt(periodo);
+
+  if (!(await getAlunoById(matriculaAluno)))
+    throw new Exception(404, 'Aluno não encontrado');
+
+  const avaliacao = await prisma.avaliacao.findMany({
+    where: {
+      matriculaAluno: matriculaAluno,
+      turma: {
+        periodoLetivo: {
+          id: periodId,
+        },
+      },
+    },
+    select: {
+      grauFinal: true,
+      situacao: true,
+      turma: {
+        select: {
+          Disciplina: {
+            select: {
+              cargaHoraria: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return { ira: calcularIra(avaliacao) };
 };
