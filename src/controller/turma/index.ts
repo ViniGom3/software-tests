@@ -1,6 +1,4 @@
-import { Situacao } from '.prisma/client';
 import { Router } from 'express';
-import prisma from '../../prisma';
 import {
   createTurma,
   deleteTurma,
@@ -9,7 +7,6 @@ import {
   subscribeAlunoInTurma,
   updateTurma,
 } from '../../services/turma';
-import { calcularMediaTurma } from '../../utils/turma';
 
 const router = Router();
 
@@ -55,7 +52,9 @@ router.get('/:codigo/media', async (req, res, next) => {
 
 router.post('/:codigo/inscricao', async (req, res, next) => {
   try {
-    res.json(await subscribeAlunoInTurma(req.params.codigo, req.body.id));
+    res.json(
+      await subscribeAlunoInTurma(req.params.codigo, req.body.matricula),
+    );
   } catch (error) {
     next(error);
   }
