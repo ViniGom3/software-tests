@@ -1,7 +1,7 @@
 import { Situacao } from '.prisma/client';
 import { Router } from 'express';
-import prisma from '../prisma';
-import { calcularMediaTurma } from '../services/turma';
+import prisma from '../../prisma';
+import { calcularMediaTurma } from '../../services/turma';
 
 const router = Router();
 

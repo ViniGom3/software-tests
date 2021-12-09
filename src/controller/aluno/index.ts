@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import prisma from '../prisma';
-import { Exception } from '../error';
-import { calcularIra } from '../services/alunos';
+import prisma from '../../prisma';
+import { Exception } from '../../error';
+import { calcularIra } from '../../services/alunos';
 
 const router = Router();
 

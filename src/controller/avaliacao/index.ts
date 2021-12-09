@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { Exception } from '../error';
-import prisma from '../prisma';
+import { Exception } from '../../error';
+import prisma from '../../prisma';
 
 const router = Router();
 
