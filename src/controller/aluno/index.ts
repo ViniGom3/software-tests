@@ -1,15 +1,19 @@
 import { Router } from 'express';
 import prisma from '../../prisma';
 import { Exception } from '../../error';
-import { calcularIra } from '../../services/alunos';
+import { calcularIra } from '../../utils/alunos';
+import {
+  createAluno,
+  deleteAluno,
+  getAllAlunos,
+  getAlunoById,
+} from '../../services/aluno';
 
 const router = Router();
 
 router.get('/', async (_, res, next) => {
   try {
-    const allAlunos = await prisma.aluno.findMany();
-
-    res.json(allAlunos);
+    res.json(await getAllAlunos());
   } catch (error) {
     next(error);
   }
@@ -17,29 +21,7 @@ router.get('/', async (_, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const { matricula } = req.body;
-
-    if (!matricula)
-      throw new Exception(400, 'O parametro "matricula" é obrigatorio');
-
-    let aluno = await prisma.aluno.findUnique({
-      where: {
-        matricula,
-      },
-    });
-
-    if (aluno) {
-      res.json(aluno);
-      return;
-    }
-
-    aluno = await prisma.aluno.create({
-      data: {
-        matricula: matricula,
-      },
-    });
-
-    res.json(aluno);
+    res.json(await createAluno(req.body));
   } catch (error) {
     next(error);
   }
@@ -47,28 +29,7 @@ router.post('/', async (req, res, next) => {
 
 router.delete('/:matricula_aluno', async (req, res, next) => {
   try {
-    const { matricula_aluno } = req.params;
-
-    if (!matricula_aluno)
-      throw new Exception(400, 'O parametro "matricula" é obrigatorio');
-
-    const matricula = parseInt(matricula_aluno);
-
-    let aluno = await prisma.aluno.findUnique({
-      where: {
-        matricula,
-      },
-    });
-
-    if (!aluno) throw new Exception(404, 'Aluno não encontrado');
-
-    aluno = await prisma.aluno.delete({
-      where: {
-        matricula,
-      },
-    });
-
-    res.json(aluno);
+    res.json(await deleteAluno(req.params.matricula_aluno));
   } catch (error) {
     next(error);
   }
