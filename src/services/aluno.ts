@@ -26,13 +26,7 @@ export const createAluno = async (aluno: Aluno) => {
 export const deleteAluno = async (matric: string) => {
   const matricula = parseInt(matric);
 
-  if (
-    !(await prisma.aluno.findUnique({
-      where: {
-        matricula,
-      },
-    }))
-  )
+  if (!(await getAlunoById(matricula)))
     throw new Exception(404, 'Aluno não encontrado');
 
   return prisma.aluno.delete({
