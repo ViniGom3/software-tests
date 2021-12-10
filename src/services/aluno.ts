@@ -1,7 +1,7 @@
 import prisma from '../prisma';
 import { Aluno } from '.prisma/client';
 import { Exception } from '../error';
-import { calcularIra } from '../utils/alunos';
+import { calcularIra } from '../utils/aluno';
 
 export const getAllAlunos = () => {
   return prisma.aluno.findMany();

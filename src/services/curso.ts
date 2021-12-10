@@ -1,7 +1,7 @@
 import { Curso } from '@prisma/client';
 import { Exception } from '../error';
 import prisma from '../prisma';
-import { calcularIra } from '../utils/alunos';
+import { calcularIra } from '../utils/aluno';
 
 export const getAllCursos = () => {
   return prisma.curso.findMany();
