@@ -34,6 +34,7 @@ CREATE TABLE "Turma" (
     "periodoLetivoId" INTEGER NOT NULL,
     "horario" TEXT NOT NULL,
     "disciplinaId" INTEGER NOT NULL,
+    "qtdVagas" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "Turma_pkey" PRIMARY KEY ("codigo")
 );
@@ -50,14 +51,13 @@ CREATE TABLE "PeriodoLetivo" (
 
 -- CreateTable
 CREATE TABLE "Disciplina" (
-    "id" SERIAL NOT NULL,
+    "codigo" SERIAL NOT NULL,
     "nome" TEXT NOT NULL,
     "cargaHoraria" INTEGER NOT NULL,
     "nomeDepartamento" TEXT NOT NULL,
     "nivel" "Nivel" NOT NULL DEFAULT E'BACHARELADO',
-    "disciplinaId" INTEGER,
 
-    CONSTRAINT "Disciplina_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Disciplina_pkey" PRIMARY KEY ("codigo")
 );
 
 -- CreateTable
@@ -65,23 +65,29 @@ CREATE TABLE "Avaliacao" (
     "id" SERIAL NOT NULL,
     "matriculaAluno" INTEGER NOT NULL,
     "codigoTurma" INTEGER NOT NULL,
-    "grauFinal" INTEGER NOT NULL,
-    "situacao" "Situacao" NOT NULL DEFAULT E'APROVADO',
+    "grauFinal" INTEGER NOT NULL DEFAULT 0,
+    "situacao" "Situacao" NOT NULL DEFAULT E'REPROVADO_NOTA',
 
     CONSTRAINT "Avaliacao_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "_PreRequisito" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Curso_codigo_key" ON "Curso"("codigo");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Turma_disciplinaId_key" ON "Turma"("disciplinaId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Disciplina_nome_key" ON "Disciplina"("nome");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Avaliacao_matriculaAluno_codigoTurma_key" ON "Avaliacao"("matriculaAluno", "codigoTurma");
+CREATE UNIQUE INDEX "_PreRequisito_AB_unique" ON "_PreRequisito"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_PreRequisito_B_index" ON "_PreRequisito"("B");
 
 -- AddForeignKey
 ALTER TABLE "Aluno" ADD CONSTRAINT "Aluno_cursoId_fkey" FOREIGN KEY ("cursoId") REFERENCES "Curso"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -90,13 +96,16 @@ ALTER TABLE "Aluno" ADD CONSTRAINT "Aluno_cursoId_fkey" FOREIGN KEY ("cursoId") 
 ALTER TABLE "Turma" ADD CONSTRAINT "Turma_periodoLetivoId_fkey" FOREIGN KEY ("periodoLetivoId") REFERENCES "PeriodoLetivo"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Turma" ADD CONSTRAINT "Turma_disciplinaId_fkey" FOREIGN KEY ("disciplinaId") REFERENCES "Disciplina"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Turma" ADD CONSTRAINT "Turma_disciplinaId_fkey" FOREIGN KEY ("disciplinaId") REFERENCES "Disciplina"("codigo") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Disciplina" ADD CONSTRAINT "Disciplina_disciplinaId_fkey" FOREIGN KEY ("disciplinaId") REFERENCES "Disciplina"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Avaliacao" ADD CONSTRAINT "Avaliacao_matriculaAluno_fkey" FOREIGN KEY ("matriculaAluno") REFERENCES "Aluno"("matricula") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Avaliacao" ADD CONSTRAINT "Avaliacao_matriculaAluno_fkey" FOREIGN KEY ("matriculaAluno") REFERENCES "Aluno"("matricula") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Avaliacao" ADD CONSTRAINT "Avaliacao_codigoTurma_fkey" FOREIGN KEY ("codigoTurma") REFERENCES "Turma"("codigo") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Avaliacao" ADD CONSTRAINT "Avaliacao_codigoTurma_fkey" FOREIGN KEY ("codigoTurma") REFERENCES "Turma"("codigo") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "_PreRequisito" ADD FOREIGN KEY ("A") REFERENCES "Disciplina"("codigo") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_PreRequisito" ADD FOREIGN KEY ("B") REFERENCES "Disciplina"("codigo") ON DELETE CASCADE ON UPDATE CASCADE;
