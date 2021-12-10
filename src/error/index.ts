@@ -1,16 +1,19 @@
-export interface Exception {
+export interface Exception extends Error {
   code: number;
   message: string;
 }
 
+type CodeType = Exception['code'];
+type MessageType = Exception['message'];
+
 export const Exception = function (
   this: Exception,
-  code: number,
-  message: string,
+  code: CodeType,
+  message: MessageType,
 ) {
   this.code = code;
   this.message = message;
-} as unknown as { new (code: number, message: string): Exception };
+} as unknown as { new (code: CodeType, message: MessageType): Exception };
 
 export enum SUCCESS_CODE_ERROR {
   OK = 200,
