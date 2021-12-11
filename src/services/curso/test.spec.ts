@@ -52,4 +52,25 @@ describe('Test Service', () => {
     const avaliacao = await getIraByCurso('1', ctx);
     expect(avaliacao).toBeCloseTo((8 * 60 + 5 * 60 + 0) / (2 * 60 + 30), 1);
   });
+
+  it('should get turma mean zero when aluno is new', async () => {
+    const mockedPeriodo = [
+      {
+        id: 1,
+      },
+      {
+        id: 2,
+      },
+      {
+        id: 3,
+      },
+    ] as PeriodoLetivo[];
+
+    mockCtx.prisma.periodoLetivo.findMany.mockResolvedValue(mockedPeriodo);
+
+    mockCtx.prisma.avaliacao.findMany.mockResolvedValue([]);
+
+    const avaliacao = await getIraByCurso('1', ctx);
+    expect(avaliacao).toBe(0);
+  });
 });
