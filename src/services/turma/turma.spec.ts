@@ -114,4 +114,35 @@ describe('Test Service', () => {
       expect(error).toHaveProperty('code', 400);
     }
   });
+
+  it('should throw error when turma there are no vacancy', async () => {
+    const mockedNeededPreRequisitos = {
+      Avaliacao: [
+        {
+          matriculaAluno: 1,
+        },
+        { matriculaAluno: 2 },
+        { matriculaAluno: 3 },
+      ],
+      Disciplina: {
+        preRequisitos: [{ codigo: 1 }, { codigo: 2 }, { codigo: 3 }],
+      },
+      qtdVagas: 2,
+    } as TurmaType;
+
+    mockCtx.prisma.turma.findUnique.mockResolvedValue(
+      mockedNeededPreRequisitos,
+    );
+    mockCtx.prisma.avaliacao.count.mockResolvedValue(
+      mockedNeededPreRequisitos.Disciplina.preRequisitos.length,
+    );
+    mockCtx.prisma.avaliacao.findFirst.mockResolvedValue(null);
+
+    try {
+      await subscribeAlunoInTurma('1', 1, ctx);
+    } catch (error) {
+      expect(error).toHaveProperty('message', 'Turma lotada');
+      expect(error).toHaveProperty('code', 400);
+    }
+  });
 });
