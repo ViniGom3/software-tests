@@ -1,10 +1,9 @@
 import { Avaliacao } from '@prisma/client';
 import { Context } from '../../context';
 import { Exception } from '../../error';
-import prisma from '../../prisma';
 
-export const getAllAvaliacoes = () => {
-  return prisma.avaliacao.findMany();
+export const getAllAvaliacoes = (ctx: Context) => {
+  return ctx.prisma.avaliacao.findMany();
 };
 
 export const getAvaliacaoById = (id: number, ctx: Context) => {

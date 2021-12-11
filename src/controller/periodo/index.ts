@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import prisma from '../../prisma';
 import {
   createPeriodo,
   deletePeriodo,
@@ -6,11 +7,15 @@ import {
   updatePeriodo,
 } from '../../services/periodo';
 
+const ctx = {
+  prisma,
+};
+
 const router = Router();
 
 router.get('/', async (_, res, next) => {
   try {
-    res.json(await getAllPeriodos());
+    res.json(await getAllPeriodos(ctx));
   } catch (error) {
     next(error);
   }
@@ -18,7 +23,7 @@ router.get('/', async (_, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    res.json(await createPeriodo(req.body));
+    res.json(await createPeriodo(req.body, ctx));
   } catch (error) {
     next(error);
   }
@@ -26,7 +31,7 @@ router.post('/', async (req, res, next) => {
 
 router.delete('/:id_periodo_letivo', async (req, res, next) => {
   try {
-    res.json(await deletePeriodo(req.params.id_periodo_letivo));
+    res.json(await deletePeriodo(req.params.id_periodo_letivo, ctx));
   } catch (error) {
     next(error);
   }
@@ -34,7 +39,7 @@ router.delete('/:id_periodo_letivo', async (req, res, next) => {
 
 router.patch('/', async (req, res, next) => {
   try {
-    res.json(await updatePeriodo(req.body));
+    res.json(await updatePeriodo(req.body, ctx));
   } catch (error) {
     next(error);
   }
