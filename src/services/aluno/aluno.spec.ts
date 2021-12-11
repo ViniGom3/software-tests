@@ -167,4 +167,15 @@ describe('Test Service', () => {
 
     expect(await getIraByAluno('1', ctx)).toEqual({ ira: 8 });
   });
+
+  it('should throw error when aluno is not exist', async () => {
+    mockCtx.prisma.aluno.findUnique.mockResolvedValue(null);
+
+    try {
+      await getIraByAluno('1', ctx);
+    } catch (error) {
+      expect(error).toHaveProperty('message', 'Aluno não encontrado');
+      expect(error).toHaveProperty('code', 404);
+    }
+  });
 });
