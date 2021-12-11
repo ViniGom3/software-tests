@@ -1,5 +1,6 @@
 import { Express } from 'express';
 import { ErrorMiddleware } from '../middlewares';
+
 import Aluno from './aluno';
 import Disciplina from './disciplina';
 import Avaliacao from './avaliacao';
