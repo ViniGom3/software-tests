@@ -72,10 +72,17 @@ export const subscribeAlunoInTurma = async (
     where: {
       codigo: codigoTurma,
     },
-    include: {
+    select: {
+      qtdVagas: true,
+      Avaliacao: {
+        select: {
+          matriculaAluno: true,
+        },
+      },
       Disciplina: {
-        include: {
+        select: {
           preRequisitos: true,
+          codigo: true,
         },
       },
     },
@@ -129,23 +136,7 @@ export const subscribeAlunoInTurma = async (
   if (alreadyApprovedInDisciplina)
     throw new Exception(400, 'Aluno já está aprovado nesta disciplina');
 
-  const vacanciesInTurma = await ctx.prisma.turma.findUnique({
-    where: {
-      codigo: codigoTurma,
-    },
-    select: {
-      qtdVagas: true,
-      Avaliacao: {
-        select: {
-          matriculaAluno: true,
-        },
-      },
-    },
-  });
-
-  const thereVacancy =
-    vacanciesInTurma &&
-    vacanciesInTurma.Avaliacao.length < vacanciesInTurma.qtdVagas;
+  const thereVacancy = turma && turma.Avaliacao.length < turma.qtdVagas;
 
   if (!thereVacancy) throw new Exception(400, 'Turma lotada');
 
