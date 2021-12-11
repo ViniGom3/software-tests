@@ -29,6 +29,7 @@ describe('Test Service', () => {
 
     expect(alunos).toBeTruthy();
   });
+
   it('should get 2 alunos', async () => {
     const mockedAluno = [{ status: 'ATIVO' }, { status: 'ATIVO' }] as Aluno[];
 
@@ -37,6 +38,7 @@ describe('Test Service', () => {
     const alunos = await getAllAlunos(ctx);
     expect(alunos).toHaveLength(2);
   });
+
   it('should create 1 alunos', async () => {
     const aluno = { status: 'ATIVO' } as Aluno;
 
@@ -69,5 +71,16 @@ describe('Test Service', () => {
       matricula: 1,
       status: 'ATIVO',
     });
+  });
+
+  it('should throw error when aluno is not exist', async () => {
+    mockCtx.prisma.aluno.findUnique.mockResolvedValue(null);
+
+    try {
+      await deleteAluno('1', ctx);
+    } catch (error) {
+      expect(error).toHaveProperty('message', 'Aluno não encontrado');
+      expect(error).toHaveProperty('code', 404);
+    }
   });
 });
