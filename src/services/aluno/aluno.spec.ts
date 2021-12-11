@@ -9,7 +9,6 @@ import {
   getIraByAluno,
   getIraByPeriod,
 } from '.';
-import { AvaliacaoUtil } from '../../utils/aluno';
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -38,6 +37,15 @@ describe('Test Service', () => {
 
     const alunos = await getAllAlunos(ctx);
     expect(alunos).toHaveLength(2);
+  });
+
+  it('should get an aluno by id', async () => {
+    const mockedAluno = { status: 'ATIVO' } as Aluno;
+
+    mockCtx.prisma.aluno.findUnique.mockResolvedValue(mockedAluno);
+
+    const alunos = await getAlunoById(1, ctx);
+    expect(alunos).toEqual({ status: 'ATIVO' });
   });
 
   it('should create 1 alunos', async () => {
