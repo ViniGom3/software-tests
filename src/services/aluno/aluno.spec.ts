@@ -37,4 +37,12 @@ describe('Test Service', () => {
     const alunos = await getAllAlunos(ctx);
     expect(alunos).toHaveLength(2);
   });
+  it('should create 1 alunos', async () => {
+    const aluno = { status: 'ATIVO' } as Aluno;
+
+    mockCtx.prisma.aluno.findUnique.mockResolvedValue(null);
+    mockCtx.prisma.aluno.create.mockResolvedValue(aluno);
+
+    expect(await createAluno(aluno, ctx)).toEqual({ status: 'ATIVO' });
+  });
 });
