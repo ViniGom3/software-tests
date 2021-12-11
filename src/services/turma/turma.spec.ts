@@ -145,4 +145,45 @@ describe('Test Service', () => {
       expect(error).toHaveProperty('code', 400);
     }
   });
+
+  it('should throw error when turma there are no vacancy', async () => {
+    const mockedNeededPreRequisitos = {
+      Avaliacao: [
+        {
+          matriculaAluno: 1,
+        },
+        { matriculaAluno: 2 },
+      ],
+      Disciplina: {
+        preRequisitos: [{ codigo: 1 }, { codigo: 2 }, { codigo: 3 }],
+      },
+      qtdVagas: 20,
+    } as TurmaType;
+
+    mockCtx.prisma.turma.findUnique.mockResolvedValue(
+      mockedNeededPreRequisitos,
+    );
+    mockCtx.prisma.avaliacao.count.mockResolvedValue(
+      mockedNeededPreRequisitos.Avaliacao.length,
+    );
+
+    try {
+      await subscribeAlunoInTurma('1', 1, ctx);
+    } catch (error) {
+      expect(error).toHaveProperty(
+        'message',
+        'Aluno não está apto para a turma',
+      );
+      expect(error).toHaveProperty('code', 400);
+    }
+  });
+
+  it('should throw error when turma is not found', async () => {
+    try {
+      await subscribeAlunoInTurma('1', 1, ctx);
+    } catch (error) {
+      expect(error).toHaveProperty('message', 'Turma não encontrada');
+      expect(error).toHaveProperty('code', 404);
+    }
+  });
 });
