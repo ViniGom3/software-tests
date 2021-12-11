@@ -1,4 +1,5 @@
 import { Aluno } from '@prisma/client';
+import { Context, createMockContext, MockContext } from '../../context';
 import {
   getAllAlunos,
   getAlunoById,
@@ -9,40 +10,31 @@ import {
   getIraByPeriod,
 } from '.';
 
-import prisma from '../../prisma';
+let mockCtx: MockContext;
+let ctx: Context;
 
-describe('', () => {
-  beforeAll(async () => {
-    await prisma.aluno.createMany({
-      data: [{ status: 'ATIVO' }, { status: 'ATIVO' }] as Aluno[],
-    });
+describe('Test Service', () => {
+  beforeEach(() => {
+    mockCtx = createMockContext();
+    ctx = mockCtx as unknown as Context;
   });
 
-  afterAll(async () => {
-    const deleteAvaliacao = prisma.avaliacao.deleteMany();
-    const deleteTurma = prisma.turma.deleteMany();
-    const deleteDisciplina = prisma.disciplina.deleteMany();
-    const deletePeriodo = prisma.periodoLetivo.deleteMany();
-    const deleteAluno = prisma.aluno.deleteMany();
-    const deleteCurso = prisma.curso.deleteMany();
+  it('should get []', async () => {
+    const mockedAluno = [] as Aluno[];
 
-    await prisma.$transaction([
-      deleteAvaliacao,
-      deleteTurma,
-      deleteTurma,
-      deleteDisciplina,
-      deletePeriodo,
-      deleteAluno,
-      deleteCurso,
-    ]);
+    mockCtx.prisma.aluno.findMany.mockResolvedValue(mockedAluno);
 
-    await prisma.$disconnect();
-  });
-
-  it('should get 2 alunos', async () => {
-    const alunos = await getAllAlunos();
-    expect(alunos).toHaveLength(2);
+    const alunos = await getAllAlunos(ctx);
+    expect(alunos).toHaveLength(0);
 
     expect(alunos).toBeTruthy();
+  });
+  it('should get 2 alunos', async () => {
+    const mockedAluno = [{ status: 'ATIVO' }, { status: 'ATIVO' }] as Aluno[];
+
+    mockCtx.prisma.aluno.findMany.mockResolvedValue(mockedAluno);
+
+    const alunos = await getAllAlunos(ctx);
+    expect(alunos).toHaveLength(2);
   });
 });
