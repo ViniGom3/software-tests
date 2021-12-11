@@ -45,4 +45,18 @@ describe('Test Service', () => {
 
     expect(await createAluno(aluno, ctx)).toEqual({ status: 'ATIVO' });
   });
+
+  it('should create throw error when aluno is repeated', async () => {
+    const aluno = { status: 'ATIVO' } as Aluno;
+
+    mockCtx.prisma.aluno.findUnique.mockResolvedValue(aluno);
+
+    try {
+      await createAluno(aluno, ctx);
+    } catch (error) {
+      expect(error).toBeTruthy();
+      expect(error).toHaveProperty('message', 'Aluno já cadastrado');
+      expect(error).toHaveProperty('code', 400);
+    }
+  });
 });
