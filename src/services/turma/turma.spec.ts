@@ -63,7 +63,7 @@ describe('Test Service', () => {
 
     const subscribeInTurma = { matriculaAluno: 1, codigoTurma: 1 } as Avaliacao;
 
-    mockCtx.prisma.turma.findUnique.mockResolvedValueOnce(
+    mockCtx.prisma.turma.findUnique.mockResolvedValue(
       mockedNeededPreRequisitos,
     );
     mockCtx.prisma.avaliacao.count.mockResolvedValue(
@@ -71,14 +71,47 @@ describe('Test Service', () => {
     );
     mockCtx.prisma.avaliacao.findFirst.mockResolvedValue(null);
 
-    mockCtx.prisma.turma.findUnique.mockResolvedValueOnce(
+    mockCtx.prisma.avaliacao.create.mockResolvedValue(subscribeInTurma);
+
+    expect(await subscribeAlunoInTurma('1', 1, ctx)).toEqual({
+      matriculaAluno: 1,
+      codigoTurma: 1,
+    });
+  });
+
+  it('should throw error when aluno already approved in this disciplina', async () => {
+    const mockedNeededPreRequisitos = {
+      Avaliacao: [
+        {
+          matriculaAluno: 1,
+        },
+        { matriculaAluno: 2 },
+        { matriculaAluno: 3 },
+      ],
+      Disciplina: {
+        preRequisitos: [{ codigo: 1 }, { codigo: 2 }, { codigo: 3 }],
+      },
+      qtdVagas: 20,
+    } as TurmaType;
+
+    const alreadyApproved = { matriculaAluno: 1, codigoTurma: 1 } as Avaliacao;
+
+    mockCtx.prisma.turma.findUnique.mockResolvedValue(
       mockedNeededPreRequisitos,
     );
+    mockCtx.prisma.avaliacao.count.mockResolvedValue(
+      mockedNeededPreRequisitos.Disciplina.preRequisitos.length,
+    );
+    mockCtx.prisma.avaliacao.findFirst.mockResolvedValue(alreadyApproved);
 
-    mockCtx.prisma.avaliacao.create.mockResolvedValueOnce(subscribeInTurma);
-
-    const avaliacao = await subscribeAlunoInTurma('1', 1, ctx);
-
-    expect(avaliacao).toEqual({ matriculaAluno: 1, codigoTurma: 1 });
+    try {
+      await subscribeAlunoInTurma('1', 1, ctx);
+    } catch (error) {
+      expect(error).toHaveProperty(
+        'message',
+        'Aluno já está aprovado nesta disciplina',
+      );
+      expect(error).toHaveProperty('code', 400);
+    }
   });
 });
