@@ -10,6 +10,7 @@
     "dev": "nodemon --watch 'src/' --exec 'ts-node src/app.ts' -e ts",
     "watch:debug": "nodemon --inspect=5858 -e ts,tsx --exec node -r ts-node/register ./src/app.ts",
     "test": "jest --maxWorkers=50%",
+    "test:cache": "jest --clearCache",
     "test:watch": "jest --watch --maxWorkers=25%",
     "test:integration": "jest -i --watch"
   },
