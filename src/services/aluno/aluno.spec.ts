@@ -96,4 +96,17 @@ describe('Test Service', () => {
       status: 'INATIVO',
     });
   });
+
+  it('should throw error when aluno is not exist', async () => {
+    const alunoBeforeUpdate = { matricula: 1, status: 'ATIVO' } as Aluno;
+
+    mockCtx.prisma.aluno.findUnique.mockResolvedValue(null);
+
+    try {
+      await updateAluno(alunoBeforeUpdate, ctx);
+    } catch (error) {
+      expect(error).toHaveProperty('message', 'Aluno não encontrado');
+      expect(error).toHaveProperty('code', 404);
+    }
+  });
 });
