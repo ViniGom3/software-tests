@@ -26,6 +26,18 @@ Para iniciar a aplicação:
 $ npm run start
 ```
 
+Para adicionar o _schema_ ao banco:
+
+```shell
+$ npx prisma migrate dev --name init
+```
+
+Para preencher o banco com dados ficticios 🚧:
+
+```shell
+$ npx prisma db seed
+```
+
 Para iniciar a aplicação em modo de desenvolvimento:
 
 ```shell
