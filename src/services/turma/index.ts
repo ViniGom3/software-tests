@@ -81,7 +81,9 @@ export const subscribeAlunoInTurma = async (
     },
   });
 
-  const preRequisitos = turma?.Disciplina.preRequisitos;
+  if (!turma) throw new Exception(404, 'Turma não encontrada');
+
+  const preRequisitos = turma.Disciplina.preRequisitos;
 
   const preRequisitoCodigos = preRequisitos?.map(
     preRequisito => preRequisito.codigo,
