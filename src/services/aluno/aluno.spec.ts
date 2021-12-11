@@ -178,7 +178,7 @@ describe('Test Service', () => {
       expect(error).toHaveProperty('code', 404);
     }
   });
-  it('should get ira from aluno', async () => {
+  it('should get ira from aluno by period', async () => {
     const findedAvaliacoes = [
       {
         turma: {
@@ -233,5 +233,16 @@ describe('Test Service', () => {
     mockCtx.prisma.avaliacao.findMany.mockResolvedValue(findedAvaliacoes);
 
     expect(await getIraByPeriod('1', '1', ctx)).toEqual({ ira: 8 });
+  });
+
+  it('should throw error when aluno is not exist', async () => {
+    mockCtx.prisma.aluno.findUnique.mockResolvedValue(null);
+
+    try {
+      await getIraByPeriod('1', '1', ctx);
+    } catch (error) {
+      expect(error).toHaveProperty('message', 'Aluno não encontrado');
+      expect(error).toHaveProperty('code', 404);
+    }
   });
 });
