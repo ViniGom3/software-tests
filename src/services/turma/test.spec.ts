@@ -1,4 +1,4 @@
-import { Aluno, Avaliacao, Disciplina, Situacao, Turma } from '@prisma/client';
+import { Avaliacao, Disciplina, Situacao, Turma } from '@prisma/client';
 import { Context, createMockContext, MockContext } from '../../context';
 import { getIraMeanTurma, subscribeAlunoInTurma } from '.';
 
