@@ -1,6 +1,6 @@
 import { PeriodoLetivo } from '@prisma/client';
-import { Exception } from '../error';
-import prisma from '../prisma';
+import { Exception } from '../../error';
+import prisma from '../../prisma';
 
 export const getAllPeriodos = () => {
   return prisma.periodoLetivo.findMany();

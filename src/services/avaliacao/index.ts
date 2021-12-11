@@ -1,6 +1,6 @@
 import { Avaliacao } from '@prisma/client';
-import { Exception } from '../error';
-import prisma from '../prisma';
+import { Exception } from '../../error';
+import prisma from '../../prisma';
 
 export const getAllAvaliacoes = () => {
   return prisma.avaliacao.findMany();

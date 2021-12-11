@@ -1,6 +1,6 @@
 import { Disciplina } from '@prisma/client';
-import { Exception } from '../error';
-import prisma from '../prisma';
+import { Exception } from '../../error';
+import prisma from '../../prisma';
 
 export const getAllDisciplinas = async () => {
   return prisma.disciplina.findMany();

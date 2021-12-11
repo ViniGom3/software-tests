@@ -1,7 +1,7 @@
 import { Situacao, Turma } from '@prisma/client';
-import { Exception } from '../error';
-import prisma from '../prisma';
-import { calcularMediaTurma } from '../utils/turma';
+import { Exception } from '../../error';
+import prisma from '../../prisma';
+import { calcularMediaTurma } from '../../utils/turma';
 
 export const getAllTurmas = () => {
   return prisma.turma.findMany();
