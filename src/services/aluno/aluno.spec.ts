@@ -48,6 +48,13 @@ describe('Test Service', () => {
     expect(alunos).toEqual({ status: 'ATIVO' });
   });
 
+  it('should get null', async () => {
+    mockCtx.prisma.aluno.findUnique.mockResolvedValue(null);
+
+    const alunos = await getAlunoById(1, ctx);
+    expect(alunos).toEqual(null);
+  });
+
   it('should create 1 alunos', async () => {
     const aluno = { status: 'ATIVO' } as Aluno;
 
