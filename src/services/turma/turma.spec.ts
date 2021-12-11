@@ -1,9 +1,16 @@
-import { Aluno, Avaliacao, Situacao } from '@prisma/client';
+import { Aluno, Avaliacao, Disciplina, Situacao, Turma } from '@prisma/client';
 import { Context, createMockContext, MockContext } from '../../context';
 import { getIraMeanTurma, subscribeAlunoInTurma } from '.';
 
 let mockCtx: MockContext;
 let ctx: Context;
+
+type TurmaType = Turma & {
+  Avaliacao: Pick<Avaliacao, 'matriculaAluno'>[];
+  Disciplina: {
+    preRequisitos: Disciplina[];
+  };
+};
 
 describe('Test Service', () => {
   beforeEach(() => {
@@ -37,5 +44,41 @@ describe('Test Service', () => {
 
     const avaliacao = await getIraMeanTurma('1', ctx);
     expect(avaliacao).toBeCloseTo(7.3, 1);
+  });
+
+  it('should subscribe aluno in turma', async () => {
+    const mockedNeededPreRequisitos = {
+      Avaliacao: [
+        {
+          matriculaAluno: 1,
+        },
+        { matriculaAluno: 2 },
+        { matriculaAluno: 3 },
+      ],
+      Disciplina: {
+        preRequisitos: [{ codigo: 1 }, { codigo: 2 }, { codigo: 3 }],
+      },
+      qtdVagas: 20,
+    } as TurmaType;
+
+    const subscribeInTurma = { matriculaAluno: 1, codigoTurma: 1 } as Avaliacao;
+
+    mockCtx.prisma.turma.findUnique.mockResolvedValueOnce(
+      mockedNeededPreRequisitos,
+    );
+    mockCtx.prisma.avaliacao.count.mockResolvedValue(
+      mockedNeededPreRequisitos.Disciplina.preRequisitos.length,
+    );
+    mockCtx.prisma.avaliacao.findFirst.mockResolvedValue(null);
+
+    mockCtx.prisma.turma.findUnique.mockResolvedValueOnce(
+      mockedNeededPreRequisitos,
+    );
+
+    mockCtx.prisma.avaliacao.create.mockResolvedValueOnce(subscribeInTurma);
+
+    const avaliacao = await subscribeAlunoInTurma('1', 1, ctx);
+
+    expect(avaliacao).toEqual({ matriculaAluno: 1, codigoTurma: 1 });
   });
 });
