@@ -178,4 +178,60 @@ describe('Test Service', () => {
       expect(error).toHaveProperty('code', 404);
     }
   });
+  it('should get ira from aluno', async () => {
+    const findedAvaliacoes = [
+      {
+        turma: {
+          Disciplina: {
+            cargaHoraria: 60,
+          },
+        },
+        grauFinal: 8,
+        situacao: Situacao.APROVADO,
+      },
+      {
+        turma: {
+          Disciplina: {
+            cargaHoraria: 60,
+          },
+        },
+        grauFinal: 10,
+        situacao: Situacao.APROVADO,
+      },
+      {
+        turma: {
+          Disciplina: {
+            cargaHoraria: 60,
+          },
+        },
+        grauFinal: 9,
+        situacao: Situacao.APROVADO,
+      },
+      {
+        turma: {
+          Disciplina: {
+            cargaHoraria: 60,
+          },
+        },
+        grauFinal: 6,
+        situacao: Situacao.APROVADO,
+      },
+      {
+        turma: {
+          Disciplina: {
+            cargaHoraria: 60,
+          },
+        },
+        grauFinal: 7,
+        situacao: Situacao.APROVADO,
+      },
+    ] as unknown as Avaliacao[];
+
+    const aluno = { matricula: 1, status: 'INATIVO' } as Aluno;
+
+    mockCtx.prisma.aluno.findUnique.mockResolvedValue(aluno);
+    mockCtx.prisma.avaliacao.findMany.mockResolvedValue(findedAvaliacoes);
+
+    expect(await getIraByPeriod('1', '1', ctx)).toEqual({ ira: 8 });
+  });
 });
