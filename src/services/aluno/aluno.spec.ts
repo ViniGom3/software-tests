@@ -83,4 +83,17 @@ describe('Test Service', () => {
       expect(error).toHaveProperty('code', 404);
     }
   });
+
+  it('should update an existing aluno', async () => {
+    const alunoBeforeUpdate = { matricula: 1, status: 'ATIVO' } as Aluno;
+    const aluno = { matricula: 1, status: 'INATIVO' } as Aluno;
+
+    mockCtx.prisma.aluno.findUnique.mockResolvedValue(alunoBeforeUpdate);
+    mockCtx.prisma.aluno.update.mockResolvedValue(aluno);
+
+    expect(await updateAluno(aluno, ctx)).toEqual({
+      matricula: 1,
+      status: 'INATIVO',
+    });
+  });
 });
