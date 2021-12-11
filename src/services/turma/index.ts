@@ -1,44 +1,44 @@
 import { Situacao, Turma } from '@prisma/client';
+import { Context } from '../../context';
 import { Exception } from '../../error';
-import prisma from '../../prisma';
 import { calcularMediaTurma } from '../../utils/turma';
 
-export const getAllTurmas = () => {
-  return prisma.turma.findMany();
+export const getAllTurmas = (ctx: Context) => {
+  return ctx.prisma.turma.findMany();
 };
 
-export const getTurmaById = (id: number) => {
-  return prisma.turma.findUnique({
+export const getTurmaById = (id: number, ctx: Context) => {
+  return ctx.prisma.turma.findUnique({
     where: {
       codigo: id,
     },
   });
 };
 
-export const createTurma = (turma: Turma) => {
-  return prisma.turma.create({
+export const createTurma = (turma: Turma, ctx: Context) => {
+  return ctx.prisma.turma.create({
     data: turma,
   });
 };
 
-export const deleteTurma = async (id: string) => {
+export const deleteTurma = async (id: string, ctx: Context) => {
   const codigo = parseInt(id);
 
-  if (!(await getTurmaById(codigo)))
+  if (!(await getTurmaById(codigo, ctx)))
     throw new Exception(400, 'Turma não encontrada');
 
-  return prisma.turma.delete({
+  return ctx.prisma.turma.delete({
     where: {
       codigo,
     },
   });
 };
 
-export const updateTurma = async (turma: Turma) => {
-  if (!(await getTurmaById(turma.codigo)))
+export const updateTurma = async (turma: Turma, ctx: Context) => {
+  if (!(await getTurmaById(turma.codigo, ctx)))
     throw new Exception(400, 'Turma não encontrada');
 
-  return prisma.turma.update({
+  return ctx.prisma.turma.update({
     where: {
       codigo: turma.codigo,
     },
@@ -46,10 +46,10 @@ export const updateTurma = async (turma: Turma) => {
   });
 };
 
-export const getIraMeanTurma = async (id: string) => {
+export const getIraMeanTurma = async (id: string, ctx: Context) => {
   const codigoTurma = parseInt(id);
 
-  const allTurma = await prisma.avaliacao.findMany({
+  const allTurma = await ctx.prisma.avaliacao.findMany({
     where: {
       codigoTurma,
       situacao: {
@@ -61,10 +61,14 @@ export const getIraMeanTurma = async (id: string) => {
   return calcularMediaTurma(allTurma);
 };
 
-export const subscribeAlunoInTurma = async (id: string, matricula: number) => {
+export const subscribeAlunoInTurma = async (
+  id: string,
+  matricula: number,
+  ctx: Context,
+) => {
   const codigoTurma = parseInt(id);
 
-  const turma = await prisma.turma.findUnique({
+  const turma = await ctx.prisma.turma.findUnique({
     where: {
       codigo: codigoTurma,
     },
@@ -83,7 +87,7 @@ export const subscribeAlunoInTurma = async (id: string, matricula: number) => {
     preRequisito => preRequisito.codigo,
   );
 
-  const numberOfPreRequisitoApproved = await prisma.avaliacao.count({
+  const numberOfPreRequisitoApproved = await ctx.prisma.avaliacao.count({
     where: {
       matriculaAluno: matricula,
       turma: {
@@ -103,7 +107,7 @@ export const subscribeAlunoInTurma = async (id: string, matricula: number) => {
 
   const disciplinaId = turma?.Disciplina.codigo;
 
-  const alreadyApprovedInDisciplina = await prisma.avaliacao.findFirst({
+  const alreadyApprovedInDisciplina = await ctx.prisma.avaliacao.findFirst({
     where: {
       matriculaAluno: matricula,
       turma: {
@@ -123,7 +127,7 @@ export const subscribeAlunoInTurma = async (id: string, matricula: number) => {
   if (alreadyApprovedInDisciplina)
     throw new Exception(400, 'Aluno já está aprovado nesta disciplina');
 
-  const vacanciesInTurma = await prisma.turma.findUnique({
+  const vacanciesInTurma = await ctx.prisma.turma.findUnique({
     where: {
       codigo: codigoTurma,
     },
@@ -143,7 +147,7 @@ export const subscribeAlunoInTurma = async (id: string, matricula: number) => {
 
   if (!thereVacancy) throw new Exception(400, 'Turma lotada');
 
-  return await prisma.avaliacao.create({
+  return await ctx.prisma.avaliacao.create({
     data: {
       matriculaAluno: matricula,
       codigoTurma,

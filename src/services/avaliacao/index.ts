@@ -1,4 +1,5 @@
 import { Avaliacao } from '@prisma/client';
+import { Context } from '../../context';
 import { Exception } from '../../error';
 import prisma from '../../prisma';
 
@@ -6,38 +7,38 @@ export const getAllAvaliacoes = () => {
   return prisma.avaliacao.findMany();
 };
 
-export const getAvaliacaoById = (id: number) => {
-  return prisma.avaliacao.findUnique({
+export const getAvaliacaoById = (id: number, ctx: Context) => {
+  return ctx.prisma.avaliacao.findUnique({
     where: {
       id,
     },
   });
 };
 
-export const createAvaliacao = (avaliacao: Avaliacao) => {
-  return prisma.avaliacao.create({
+export const createAvaliacao = (avaliacao: Avaliacao, ctx: Context) => {
+  return ctx.prisma.avaliacao.create({
     data: avaliacao,
   });
 };
 
-export const deleteAvaliacao = async (id: string) => {
+export const deleteAvaliacao = async (id: string, ctx: Context) => {
   const avaliacaoId = parseInt(id);
 
-  if (!(await getAvaliacaoById(avaliacaoId)))
+  if (!(await getAvaliacaoById(avaliacaoId, ctx)))
     throw new Exception(404, 'Avaliacao não encontrada');
 
-  return prisma.avaliacao.delete({
+  return ctx.prisma.avaliacao.delete({
     where: {
       id: avaliacaoId,
     },
   });
 };
 
-export const updateAvaliacao = async (avaliacao: Avaliacao) => {
-  if (!(avaliacao.id && (await getAvaliacaoById(avaliacao.id))))
+export const updateAvaliacao = async (avaliacao: Avaliacao, ctx: Context) => {
+  if (!(avaliacao.id && (await getAvaliacaoById(avaliacao.id, ctx))))
     throw new Exception(404, 'Avaliacao não encontrada');
 
-  return prisma.avaliacao.update({
+  return ctx.prisma.avaliacao.update({
     where: {
       id: avaliacao.id,
     },

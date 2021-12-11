@@ -1,12 +1,13 @@
 import { Disciplina } from '@prisma/client';
+import { Context } from '../../context';
 import { Exception } from '../../error';
 import prisma from '../../prisma';
 
-export const getAllDisciplinas = async () => {
+export const getAllDisciplinas = async (ctx: Context) => {
   return prisma.disciplina.findMany();
 };
 
-export const getDisciplinaById = async (id: number) => {
+export const getDisciplinaById = async (id: number, ctx: Context) => {
   return prisma.disciplina.findUnique({
     where: {
       codigo: id,
@@ -14,8 +15,11 @@ export const getDisciplinaById = async (id: number) => {
   });
 };
 
-export const createDisciplina = async (disciplina: Disciplina) => {
-  if (await getDisciplinaById(disciplina.codigo))
+export const createDisciplina = async (
+  disciplina: Disciplina,
+  ctx: Context,
+) => {
+  if (await getDisciplinaById(disciplina.codigo, ctx))
     throw new Exception(400, 'Disciplina já cadastrada');
 
   return prisma.disciplina.create({
@@ -23,10 +27,10 @@ export const createDisciplina = async (disciplina: Disciplina) => {
   });
 };
 
-export const deleteDisciplina = async (id: string) => {
+export const deleteDisciplina = async (id: string, ctx: Context) => {
   const disciplinaId = parseInt(id);
 
-  if (!(await getDisciplinaById(disciplinaId)))
+  if (!(await getDisciplinaById(disciplinaId, ctx)))
     throw new Exception(404, 'Disciplina não encontrada');
 
   return prisma.disciplina.delete({
@@ -36,8 +40,11 @@ export const deleteDisciplina = async (id: string) => {
   });
 };
 
-export const updateDisciplina = async (disciplina: Disciplina) => {
-  if (!(disciplina.codigo && (await getDisciplinaById(disciplina.codigo))))
+export const updateDisciplina = async (
+  disciplina: Disciplina,
+  ctx: Context,
+) => {
+  if (!(disciplina.codigo && (await getDisciplinaById(disciplina.codigo, ctx))))
     throw new Exception(404, 'Disciplina não encontrada');
 
   return prisma.disciplina.update({

@@ -1,44 +1,44 @@
 import { Curso } from '@prisma/client';
+import { Context } from '../../context';
 import { Exception } from '../../error';
-import prisma from '../../prisma';
 import { calcularIra } from '../../utils/aluno';
 
-export const getAllCursos = () => {
-  return prisma.curso.findMany();
+export const getAllCursos = (ctx: Context) => {
+  return ctx.prisma.curso.findMany();
 };
 
-export const getCursoById = (id: number) => {
-  return prisma.curso.findUnique({
+export const getCursoById = (id: number, ctx: Context) => {
+  return ctx.prisma.curso.findUnique({
     where: {
       codigo: id,
     },
   });
 };
 
-export const createCurso = (curso: Curso) => {
-  return prisma.curso.create({
+export const createCurso = (curso: Curso, ctx: Context) => {
+  return ctx.prisma.curso.create({
     data: curso,
   });
 };
 
-export const deleteCurso = async (id: string) => {
+export const deleteCurso = async (id: string, ctx: Context) => {
   const cursoId = parseInt(id);
 
-  if (!(await getCursoById(cursoId)))
+  if (!(await getCursoById(cursoId, ctx)))
     throw new Exception(404, 'Curso não encontrado');
 
-  return prisma.curso.delete({
+  return ctx.prisma.curso.delete({
     where: {
       id: cursoId,
     },
   });
 };
 
-export const updateCurso = async (curso: Curso) => {
-  if (!(!!curso.id && (await getCursoById(curso.id))))
+export const updateCurso = async (curso: Curso, ctx: Context) => {
+  if (!(!!curso.id && (await getCursoById(curso.id, ctx))))
     throw new Exception(404, 'Curso não encontrado');
 
-  return prisma.curso.update({
+  return ctx.prisma.curso.update({
     where: {
       id: curso.id,
     },
@@ -46,10 +46,10 @@ export const updateCurso = async (curso: Curso) => {
   });
 };
 
-export const getIraByCurso = async (id: string) => {
+export const getIraByCurso = async (id: string, ctx: Context) => {
   const cursoId = parseInt(id);
 
-  const ultimosPeriodosLetivos = await prisma.periodoLetivo.findMany({
+  const ultimosPeriodosLetivos = await ctx.prisma.periodoLetivo.findMany({
     orderBy: {
       dataFim: 'desc',
     },
@@ -63,7 +63,7 @@ export const getIraByCurso = async (id: string) => {
     periodos => periodos.id,
   );
 
-  const turmasDoCursoNosUltimosPeriodos = await prisma.avaliacao.findMany({
+  const turmasDoCursoNosUltimosPeriodos = await ctx.prisma.avaliacao.findMany({
     where: {
       aluno: {
         cursoId,

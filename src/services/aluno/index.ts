@@ -1,47 +1,47 @@
-import prisma from '../../prisma';
-import { Aluno } from '.prisma/client';
+import { Aluno } from '@prisma/client';
+import { Context } from '../../context';
 import { Exception } from '../../error';
 import { calcularIra } from '../../utils/aluno';
 
-export const getAllAlunos = () => {
-  return prisma.aluno.findMany();
+export const getAllAlunos = (ctx: Context) => {
+  return ctx.prisma.aluno.findMany();
 };
 
-export const getAlunoById = (matricula: number) => {
-  return prisma.aluno.findUnique({
+export const getAlunoById = (matricula: number, ctx: Context) => {
+  return ctx.prisma.aluno.findUnique({
     where: {
       matricula,
     },
   });
 };
 
-export const createAluno = async (aluno: Aluno) => {
-  if (await getAlunoById(aluno.matricula))
+export const createAluno = async (aluno: Aluno, ctx: Context) => {
+  if (await getAlunoById(aluno.matricula, ctx))
     throw new Exception(400, 'Aluno já cadastrado');
 
-  return prisma.aluno.create({
+  return ctx.prisma.aluno.create({
     data: aluno,
   });
 };
 
-export const deleteAluno = async (matric: string) => {
+export const deleteAluno = async (matric: string, ctx: Context) => {
   const matricula = parseInt(matric);
 
-  if (!(await getAlunoById(matricula)))
+  if (!(await getAlunoById(matricula, ctx)))
     throw new Exception(404, 'Aluno não encontrado');
 
-  return prisma.aluno.delete({
+  return ctx.prisma.aluno.delete({
     where: {
       matricula,
     },
   });
 };
 
-export const updateAluno = async (aluno: Aluno) => {
-  if (!(aluno.matricula && (await getAlunoById(aluno.matricula))))
+export const updateAluno = async (aluno: Aluno, ctx: Context) => {
+  if (!(aluno.matricula && (await getAlunoById(aluno.matricula, ctx))))
     throw new Exception(404, 'Aluno não encontrado');
 
-  return prisma.aluno.update({
+  return ctx.prisma.aluno.update({
     where: {
       matricula: aluno.matricula,
     },
@@ -49,13 +49,13 @@ export const updateAluno = async (aluno: Aluno) => {
   });
 };
 
-export const getIraByAluno = async (matricula: string) => {
+export const getIraByAluno = async (matricula: string, ctx: Context) => {
   const matriculaAluno = parseInt(matricula);
 
-  if (!(await getAlunoById(matriculaAluno)))
+  if (!(await getAlunoById(matriculaAluno, ctx)))
     throw new Exception(404, 'Aluno não encontrado');
 
-  const avaliacao = await prisma.avaliacao.findMany({
+  const avaliacao = await ctx.prisma.avaliacao.findMany({
     where: {
       matriculaAluno,
     },
@@ -77,14 +77,18 @@ export const getIraByAluno = async (matricula: string) => {
   return { ira: calcularIra(avaliacao) };
 };
 
-export const getIraByPeriod = async (matricula: string, periodo: string) => {
+export const getIraByPeriod = async (
+  matricula: string,
+  periodo: string,
+  ctx: Context,
+) => {
   const matriculaAluno = parseInt(matricula);
   const periodId = parseInt(periodo);
 
-  if (!(await getAlunoById(matriculaAluno)))
+  if (!(await getAlunoById(matriculaAluno, ctx)))
     throw new Exception(404, 'Aluno não encontrado');
 
-  const avaliacao = await prisma.avaliacao.findMany({
+  const avaliacao = await ctx.prisma.avaliacao.findMany({
     where: {
       matriculaAluno: matriculaAluno,
       turma: {
