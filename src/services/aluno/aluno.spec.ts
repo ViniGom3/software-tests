@@ -54,9 +54,20 @@ describe('Test Service', () => {
     try {
       await createAluno(aluno, ctx);
     } catch (error) {
-      expect(error).toBeTruthy();
       expect(error).toHaveProperty('message', 'Aluno já cadastrado');
       expect(error).toHaveProperty('code', 400);
     }
+  });
+
+  it('should delete an existing aluno', async () => {
+    const aluno = { matricula: 1, status: 'ATIVO' } as Aluno;
+
+    mockCtx.prisma.aluno.findUnique.mockResolvedValue(aluno);
+    mockCtx.prisma.aluno.delete.mockResolvedValue(aluno);
+
+    expect(await deleteAluno('1', ctx)).toEqual({
+      matricula: 1,
+      status: 'ATIVO',
+    });
   });
 });
