@@ -107,4 +107,15 @@ describe('Test Aluno', () => {
     expect(response.body).toHaveProperty('matricula', 0);
     expect(response.body).toHaveProperty('status', 'INATIVO');
   });
+
+  it('should return 404 and receive an error message', async () => {
+    const aluno = {} as Aluno;
+
+    const response = await supertest(app)
+      .patch('/aluno')
+      .send(aluno)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('response', 'Aluno não encontrado');
+  });
 });
