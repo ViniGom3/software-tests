@@ -34,4 +34,12 @@ describe('Test Curso', () => {
 
     expect(response.body).toEqual([]);
   });
+
+  it('should return 200 and receive an array with an curso', async () => {
+    mockPrisma.prisma.curso.findMany.mockResolvedValueOnce(cursos);
+    const response = await supertest(app).get('/curso').expect(200);
+
+    expect(response.body[0]).toHaveProperty('id', 0);
+    expect(response.body[0]).toHaveProperty('nome', 'Curso 0');
+  });
 });
