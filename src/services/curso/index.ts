@@ -38,11 +38,13 @@ export const updateCurso = async (curso: Curso, ctx: Context) => {
   if (!(await getCursoById(curso.id, ctx)))
     throw new Exception(404, 'Curso não encontrado');
 
+  const { codigo, ...cursoWithoutCodigo } = curso;
+
   return ctx.prisma.curso.update({
     where: {
       id: curso.id,
     },
-    data: curso,
+    data: cursoWithoutCodigo,
   });
 };
 
