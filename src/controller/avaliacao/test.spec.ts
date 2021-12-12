@@ -45,7 +45,7 @@ describe('Test Avaliação', () => {
     expect(response.body[0]).toHaveProperty('situacao', 'APROVADO');
   });
 
-  it('should return 200 and create an aluno', async () => {
+  it('should return 200 and create an avaliacao', async () => {
     mockPrisma.prisma.avaliacao.create.mockResolvedValueOnce(avaliacao);
     const response = await supertest(app)
       .post('/avaliacao')
@@ -56,7 +56,7 @@ describe('Test Avaliação', () => {
     expect(response.body).toHaveProperty('situacao', 'APROVADO');
   });
 
-  it('should return 200 and delete an aluno', async () => {
+  it('should return 200 and delete an avaliacao', async () => {
     mockPrisma.prisma.avaliacao.findUnique.mockResolvedValueOnce(avaliacao);
     mockPrisma.prisma.avaliacao.delete.mockResolvedValueOnce(avaliacao);
 
