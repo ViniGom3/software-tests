@@ -34,4 +34,21 @@ describe('Test Aluno', () => {
     expect(response.body[0]).toHaveProperty('matricula', 0);
     expect(response.body[0]).toHaveProperty('status', 'ATIVO');
   });
+
+  it('should return 200 and receive an aluno', async () => {
+    const aluno = {
+      matricula: 0,
+      status: 'ATIVO',
+    } as Aluno;
+
+    mockPrisma.prisma.aluno.findUnique.mockResolvedValue(null);
+    mockPrisma.prisma.aluno.create.mockResolvedValue(aluno);
+    const response = await supertest(app)
+      .post('/aluno')
+      .send(aluno)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('matricula', 0);
+    expect(response.body).toHaveProperty('status', 'ATIVO');
+  });
 });
