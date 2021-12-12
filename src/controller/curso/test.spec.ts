@@ -69,4 +69,23 @@ describe('Test Curso', () => {
 
     expect(response.body).toHaveProperty('response', 'Curso não encontrado');
   });
+
+  it('should return 200 and update curso', async () => {
+    const updatedCurso = {
+      id: 0,
+      nome: 'Curso 50',
+      codigo: 50,
+    } as Curso;
+
+    mockPrisma.prisma.curso.findUnique.mockResolvedValueOnce(curso);
+    mockPrisma.prisma.curso.update.mockResolvedValueOnce(updatedCurso);
+
+    const response = await supertest(app)
+      .patch('/curso')
+      .send(curso)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('id', 0);
+    expect(response.body).toHaveProperty('nome', 'Curso 50');
+  });
 });
