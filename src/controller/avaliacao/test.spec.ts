@@ -1,4 +1,4 @@
-import { Avaliacao } from '@prisma/client';
+import { Avaliacao, Situacao } from '@prisma/client';
 import supertest from 'supertest';
 import { mockPrismaContext as mockPrisma } from '..';
 import { app } from '../..';
@@ -73,5 +73,26 @@ describe('Test Avaliação', () => {
       'response',
       'Avaliacao não encontrada',
     );
+  });
+
+  it('should return 200 and update avaliacao', async () => {
+    const updatedAvaliacao = {
+      id: 0,
+      matriculaAluno: 0,
+      codigoTurma: 0,
+      grauFinal: 0,
+      situacao: Situacao.REPROVADO_FALTAS,
+    } as Avaliacao;
+
+    mockPrisma.prisma.avaliacao.findUnique.mockResolvedValueOnce(avaliacao);
+    mockPrisma.prisma.avaliacao.update.mockResolvedValueOnce(updatedAvaliacao);
+
+    const response = await supertest(app)
+      .patch('/avaliacao')
+      .send(avaliacao)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('id', 0);
+    expect(response.body).toHaveProperty('situacao', 'REPROVADO_FALTAS');
   });
 });
