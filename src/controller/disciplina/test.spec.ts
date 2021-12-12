@@ -47,4 +47,15 @@ describe('Test Disciplina', () => {
       'Linguagem de Programação 1',
     );
   });
+
+  it('should return 200 and create an disciplina', async () => {
+    mockPrisma.prisma.disciplina.create.mockResolvedValueOnce(disciplina);
+    const response = await supertest(app)
+      .post('/disciplina')
+      .send(disciplina)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('codigo', 0);
+    expect(response.body).toHaveProperty('nome', 'Linguagem de Programação 1');
+  });
 });
