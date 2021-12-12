@@ -24,7 +24,7 @@ describe('Test Avaliação', () => {
     expect(response.body).toEqual([]);
   });
 
-  it('should return 200 and receive an array with an avaliatiacao', async () => {
+  it('should return 200 and receive an array with an avaliacao', async () => {
     const avaliacao = [
       {
         id: 0,
@@ -40,5 +40,24 @@ describe('Test Avaliação', () => {
 
     expect(response.body[0]).toHaveProperty('id', 0);
     expect(response.body[0]).toHaveProperty('situacao', 'APROVADO');
+  });
+
+  it('should return 200 and create an aluno', async () => {
+    const avaliacao = {
+      id: 0,
+      matriculaAluno: 0,
+      codigoTurma: 0,
+      grauFinal: 0,
+      situacao: 'APROVADO',
+    } as Avaliacao;
+
+    mockPrisma.prisma.avaliacao.create.mockResolvedValueOnce(avaliacao);
+    const response = await supertest(app)
+      .post('/avaliacao')
+      .send(avaliacao)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('id', 0);
+    expect(response.body).toHaveProperty('situacao', 'APROVADO');
   });
 });
