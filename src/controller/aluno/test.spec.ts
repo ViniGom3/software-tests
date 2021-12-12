@@ -82,4 +82,12 @@ describe('Test Aluno', () => {
     expect(response.body).toHaveProperty('matricula', 0);
     expect(response.body).toHaveProperty('status', 'ATIVO');
   });
+
+  it('should return 404 and receive an message error', async () => {
+    mockPrisma.prisma.aluno.findUnique.mockResolvedValue(null);
+
+    const response = await supertest(app).delete('/aluno/0').expect(404);
+
+    expect(response.body).toHaveProperty('response', 'Aluno não encontrado');
+  });
 });
