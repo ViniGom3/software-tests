@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import prisma from '../../prisma';
+import { ctx } from '../.';
 import {
   createAluno,
   deleteAluno,
@@ -8,10 +8,6 @@ import {
   getIraByPeriod,
   updateAluno,
 } from '../../services/aluno';
-
-const ctx = {
-  prisma,
-};
 
 const router = Router();
 
@@ -66,6 +62,3 @@ router.get('/:matricula/:id_periodo/ira', async (req, res, next) => {
 });
 
 export default router;
-function Context(ctx: any, Context: any) {
-  throw new Error('Function not implemented.');
-}

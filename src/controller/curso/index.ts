@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import prisma from '../../prisma';
+import { ctx } from '../.';
 import {
   createCurso,
   deleteCurso,
@@ -7,10 +7,6 @@ import {
   getIraByCurso,
   updateCurso,
 } from '../../services/curso';
-
-const ctx = {
-  prisma,
-};
 
 const router = Router();
 

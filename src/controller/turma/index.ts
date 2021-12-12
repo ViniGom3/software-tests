@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import prisma from '../../prisma';
+import { ctx } from '../.';
 import {
   createTurma,
   deleteTurma,
@@ -8,10 +8,6 @@ import {
   subscribeAlunoInTurma,
   updateTurma,
 } from '../../services/turma';
-
-const ctx = {
-  prisma,
-};
 
 const router = Router();
 

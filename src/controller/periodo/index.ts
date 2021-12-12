@@ -1,15 +1,11 @@
 import { Router } from 'express';
-import prisma from '../../prisma';
+import { ctx } from '../.';
 import {
   createPeriodo,
   deletePeriodo,
   getAllPeriodos,
   updatePeriodo,
 } from '../../services/periodo';
-
-const ctx = {
-  prisma,
-};
 
 const router = Router();
 
