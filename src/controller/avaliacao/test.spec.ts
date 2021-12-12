@@ -3,9 +3,22 @@ import supertest from 'supertest';
 import { mockPrismaContext as mockPrisma } from '..';
 import { app } from '../..';
 
+let avaliacao: Avaliacao;
+let avaliacoes: Avaliacao[] = [];
+
 describe('Test Avaliação', () => {
   beforeAll(() => {
     process.env.NODE_ENV = 'test';
+
+    avaliacao = {
+      id: 0,
+      matriculaAluno: 0,
+      codigoTurma: 0,
+      grauFinal: 0,
+      situacao: 'APROVADO',
+    } as Avaliacao;
+
+    avaliacoes.push(avaliacao);
   });
 
   beforeEach(() => {
@@ -25,17 +38,7 @@ describe('Test Avaliação', () => {
   });
 
   it('should return 200 and receive an array with an avaliacao', async () => {
-    const avaliacao = [
-      {
-        id: 0,
-        matriculaAluno: 0,
-        codigoTurma: 0,
-        grauFinal: 0,
-        situacao: 'APROVADO',
-      },
-    ] as Avaliacao[];
-
-    mockPrisma.prisma.avaliacao.findMany.mockResolvedValueOnce(avaliacao);
+    mockPrisma.prisma.avaliacao.findMany.mockResolvedValueOnce(avaliacoes);
     const response = await supertest(app).get('/avaliacao').expect(200);
 
     expect(response.body[0]).toHaveProperty('id', 0);
@@ -43,14 +46,6 @@ describe('Test Avaliação', () => {
   });
 
   it('should return 200 and create an aluno', async () => {
-    const avaliacao = {
-      id: 0,
-      matriculaAluno: 0,
-      codigoTurma: 0,
-      grauFinal: 0,
-      situacao: 'APROVADO',
-    } as Avaliacao;
-
     mockPrisma.prisma.avaliacao.create.mockResolvedValueOnce(avaliacao);
     const response = await supertest(app)
       .post('/avaliacao')
