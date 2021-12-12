@@ -7,8 +7,8 @@ export const getAllAlunos = (ctx: Context) => {
   return ctx.prisma.aluno.findMany();
 };
 
-export const getAlunoById = (matricula: number, ctx: Context) => {
-  return ctx.prisma.aluno.findUnique({
+export const getAlunoById = async (matricula: number, ctx: Context) => {
+  return await ctx.prisma.aluno.findUnique({
     where: {
       matricula,
     },
@@ -38,7 +38,7 @@ export const deleteAluno = async (matric: string, ctx: Context) => {
 };
 
 export const updateAluno = async (aluno: Aluno, ctx: Context) => {
-  if (!(aluno.matricula && (await getAlunoById(aluno.matricula, ctx))))
+  if (!(await getAlunoById(aluno.matricula, ctx)))
     throw new Exception(404, 'Aluno não encontrado');
 
   return ctx.prisma.aluno.update({
