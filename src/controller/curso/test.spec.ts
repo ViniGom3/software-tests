@@ -42,4 +42,15 @@ describe('Test Curso', () => {
     expect(response.body[0]).toHaveProperty('id', 0);
     expect(response.body[0]).toHaveProperty('nome', 'Curso 0');
   });
+
+  it('should return 200 and create an curso', async () => {
+    mockPrisma.prisma.curso.create.mockResolvedValueOnce(curso);
+    const response = await supertest(app)
+      .post('/curso')
+      .send(curso)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('id', 0);
+    expect(response.body).toHaveProperty('nome', 'Curso 0');
+  });
 });
