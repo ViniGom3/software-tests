@@ -88,4 +88,13 @@ describe('Test Curso', () => {
     expect(response.body).toHaveProperty('id', 0);
     expect(response.body).toHaveProperty('nome', 'Curso 50');
   });
+
+  it('should return 404 and receive an error message', async () => {
+    const response = await supertest(app)
+      .patch('/curso')
+      .send(curso)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('response', 'Curso não encontrado');
+  });
 });
