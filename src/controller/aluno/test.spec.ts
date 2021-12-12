@@ -67,4 +67,19 @@ describe('Test Aluno', () => {
 
     expect(response.body).toHaveProperty('response', 'Aluno já cadastrado');
   });
+
+  it('should return 200 and delete an aluno', async () => {
+    const aluno = {
+      matricula: 0,
+      status: 'ATIVO',
+    } as Aluno;
+
+    mockPrisma.prisma.aluno.findUnique.mockResolvedValue(aluno);
+    mockPrisma.prisma.aluno.delete.mockResolvedValue(aluno);
+
+    const response = await supertest(app).delete('/aluno/0').expect(200);
+
+    expect(response.body).toHaveProperty('matricula', 0);
+    expect(response.body).toHaveProperty('status', 'ATIVO');
+  });
 });
