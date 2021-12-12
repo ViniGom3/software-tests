@@ -34,7 +34,7 @@ export const deleteAvaliacao = async (id: string, ctx: Context) => {
 };
 
 export const updateAvaliacao = async (avaliacao: Avaliacao, ctx: Context) => {
-  if (!(avaliacao.id && (await getAvaliacaoById(avaliacao.id, ctx))))
+  if (!(await getAvaliacaoById(avaliacao.id, ctx)))
     throw new Exception(404, 'Avaliacao não encontrada');
 
   return ctx.prisma.avaliacao.update({
