@@ -14,3 +14,10 @@ export const createMockContext = (): MockContext => {
     prisma: mockDeep<PrismaClient>(),
   };
 };
+
+export const createContext = (): Context => {
+  const prisma = new PrismaClient();
+  return {
+    prisma,
+  };
+};
