@@ -178,8 +178,14 @@ describe('Test Aluno', () => {
       findedAvaliacoes,
     );
 
-    const response = await supertest(app).get('/aluno/123/ira').expect(200);
+    const response = await supertest(app).get('/aluno/0/ira').expect(200);
 
     expect(response.body).toHaveProperty('ira', 8);
+  });
+
+  it('should return 404 and receive message error', async () => {
+    const response = await supertest(app).get('/aluno/0/ira').expect(404);
+
+    expect(response.body).toHaveProperty('response', 'Aluno não encontrado');
   });
 });
