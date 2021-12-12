@@ -188,4 +188,68 @@ describe('Test Aluno', () => {
 
     expect(response.body).toHaveProperty('response', 'Aluno não encontrado');
   });
+
+  it('should return 200 and receive ira from aluno in periodo', async () => {
+    const findedAvaliacoes = [
+      {
+        turma: {
+          Disciplina: {
+            cargaHoraria: 60,
+          },
+        },
+        grauFinal: 8,
+        situacao: Situacao.APROVADO,
+      },
+      {
+        turma: {
+          Disciplina: {
+            cargaHoraria: 60,
+          },
+        },
+        grauFinal: 10,
+        situacao: Situacao.APROVADO,
+      },
+      {
+        turma: {
+          Disciplina: {
+            cargaHoraria: 60,
+          },
+        },
+        grauFinal: 9,
+        situacao: Situacao.APROVADO,
+      },
+      {
+        turma: {
+          Disciplina: {
+            cargaHoraria: 60,
+          },
+        },
+        grauFinal: 6,
+        situacao: Situacao.APROVADO,
+      },
+      {
+        turma: {
+          Disciplina: {
+            cargaHoraria: 60,
+          },
+        },
+        grauFinal: 7,
+        situacao: Situacao.APROVADO,
+      },
+    ] as unknown as Avaliacao[];
+
+    const aluno = {
+      matricula: 0,
+      status: 'ATIVO',
+    } as Aluno;
+
+    mockPrisma.prisma.aluno.findUnique.mockResolvedValueOnce(aluno);
+    mockPrisma.prisma.avaliacao.findMany.mockResolvedValueOnce(
+      findedAvaliacoes,
+    );
+
+    const response = await supertest(app).get('/aluno/0/0/ira').expect(200);
+
+    expect(response.body).toHaveProperty('ira', 8);
+  });
 });
