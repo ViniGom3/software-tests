@@ -53,4 +53,14 @@ describe('Test Curso', () => {
     expect(response.body).toHaveProperty('id', 0);
     expect(response.body).toHaveProperty('nome', 'Curso 0');
   });
+
+  it('should return 200 and delete an curso', async () => {
+    mockPrisma.prisma.curso.findUnique.mockResolvedValueOnce(curso);
+    mockPrisma.prisma.curso.delete.mockResolvedValueOnce(curso);
+
+    const response = await supertest(app).delete('/curso/0').expect(200);
+
+    expect(response.body).toHaveProperty('id', 0);
+    expect(response.body).toHaveProperty('nome', 'Curso 0');
+  });
 });
