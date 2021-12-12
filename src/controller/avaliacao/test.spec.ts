@@ -65,4 +65,13 @@ describe('Test Avaliação', () => {
     expect(response.body).toHaveProperty('id', 0);
     expect(response.body).toHaveProperty('situacao', 'APROVADO');
   });
+
+  it('should return 404 and receive an message error', async () => {
+    const response = await supertest(app).delete('/avaliacao/0').expect(404);
+
+    expect(response.body).toHaveProperty(
+      'response',
+      'Avaliacao não encontrada',
+    );
+  });
 });
