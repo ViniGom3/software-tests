@@ -36,4 +36,15 @@ describe('Test Disciplina', () => {
 
     expect(response.body).toEqual([]);
   });
+
+  it('should return 200 and receive an array with an disciplina', async () => {
+    mockPrisma.prisma.disciplina.findMany.mockResolvedValueOnce(disciplinas);
+    const response = await supertest(app).get('/disciplina').expect(200);
+
+    expect(response.body[0]).toHaveProperty('codigo', 0);
+    expect(response.body[0]).toHaveProperty(
+      'nome',
+      'Linguagem de Programação 1',
+    );
+  });
 });
