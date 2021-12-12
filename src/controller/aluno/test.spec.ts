@@ -1,4 +1,4 @@
-import { Aluno } from '@prisma/client';
+import { Aluno, Avaliacao, Situacao } from '@prisma/client';
 import supertest from 'supertest';
 import { mockPrismaContext as mockPrisma } from '..';
 import { app } from '../..';
@@ -8,12 +8,16 @@ describe('Test Aluno', () => {
     process.env.NODE_ENV = 'test';
   });
 
+  beforeEach(() => {
+    mockPrisma.prisma.aluno.findUnique.mockClear();
+  });
+
   afterAll(async () => {
     jest.clearAllMocks();
   });
 
   it('should return 200 and receive empty array', async () => {
-    mockPrisma.prisma.aluno.findMany.mockResolvedValue([]);
+    mockPrisma.prisma.aluno.findMany.mockResolvedValueOnce([]);
 
     const response = await supertest(app).get('/aluno').expect(200);
 
@@ -28,7 +32,7 @@ describe('Test Aluno', () => {
       },
     ] as Aluno[];
 
-    mockPrisma.prisma.aluno.findMany.mockResolvedValue(aluno);
+    mockPrisma.prisma.aluno.findMany.mockResolvedValueOnce(aluno);
     const response = await supertest(app).get('/aluno').expect(200);
 
     expect(response.body[0]).toHaveProperty('matricula', 0);
@@ -41,8 +45,7 @@ describe('Test Aluno', () => {
       status: 'ATIVO',
     } as Aluno;
 
-    mockPrisma.prisma.aluno.findUnique.mockResolvedValue(null);
-    mockPrisma.prisma.aluno.create.mockResolvedValue(aluno);
+    mockPrisma.prisma.aluno.create.mockResolvedValueOnce(aluno);
     const response = await supertest(app)
       .post('/aluno')
       .send(aluno)
@@ -58,7 +61,7 @@ describe('Test Aluno', () => {
       status: 'ATIVO',
     } as Aluno;
 
-    mockPrisma.prisma.aluno.findUnique.mockResolvedValue(aluno);
+    mockPrisma.prisma.aluno.findUnique.mockResolvedValueOnce(aluno);
 
     const response = await supertest(app)
       .post('/aluno')
@@ -74,8 +77,8 @@ describe('Test Aluno', () => {
       status: 'ATIVO',
     } as Aluno;
 
-    mockPrisma.prisma.aluno.findUnique.mockResolvedValue(aluno);
-    mockPrisma.prisma.aluno.delete.mockResolvedValue(aluno);
+    mockPrisma.prisma.aluno.findUnique.mockResolvedValueOnce(aluno);
+    mockPrisma.prisma.aluno.delete.mockResolvedValueOnce(aluno);
 
     const response = await supertest(app).delete('/aluno/0').expect(200);
 
@@ -84,10 +87,24 @@ describe('Test Aluno', () => {
   });
 
   it('should return 404 and receive an message error', async () => {
-    mockPrisma.prisma.aluno.findUnique.mockResolvedValue(null);
-
     const response = await supertest(app).delete('/aluno/0').expect(404);
 
     expect(response.body).toHaveProperty('response', 'Aluno não encontrado');
+  });
+
+  it('should return 200 and update aluno', async () => {
+    const aluno = { matricula: 0, status: 'ATIVO' } as Aluno;
+    const updatedAluno = { matricula: 0, status: 'INATIVO' } as Aluno;
+
+    mockPrisma.prisma.aluno.findUnique.mockResolvedValueOnce(aluno);
+    mockPrisma.prisma.aluno.update.mockResolvedValueOnce(updatedAluno);
+
+    const response = await supertest(app)
+      .patch('/aluno')
+      .send(aluno)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('matricula', 0);
+    expect(response.body).toHaveProperty('status', 'INATIVO');
   });
 });
