@@ -35,7 +35,7 @@ export const deleteCurso = async (id: string, ctx: Context) => {
 };
 
 export const updateCurso = async (curso: Curso, ctx: Context) => {
-  if (!(!!curso.id && (await getCursoById(curso.id, ctx))))
+  if (!(await getCursoById(curso.id, ctx)))
     throw new Exception(404, 'Curso não encontrado');
 
   return ctx.prisma.curso.update({
