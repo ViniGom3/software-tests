@@ -7,6 +7,13 @@ import Avaliacao from './avaliacao';
 import Turma from './turma';
 import Curso from './curso';
 import PeriodoLetivo from './periodo';
+import { Context, createContext, createMockContext } from '../context';
+
+export const mockPrismaContext = createMockContext();
+export const prismaContext = createContext();
+
+export const ctx: Context =
+  process.env.NODE_ENV === 'test' ? mockPrismaContext : prismaContext;
 
 export const setupRoutes = (app: Express): void => {
   app.use('/aluno', Aluno);
