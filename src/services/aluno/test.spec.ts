@@ -13,7 +13,7 @@ import {
 let mockCtx: MockContext;
 let ctx: Context;
 
-describe('Test Service', () => {
+describe('Test Aluno Service', () => {
   beforeEach(() => {
     mockCtx = createMockContext();
     ctx = mockCtx as unknown as Context;

@@ -8,7 +8,7 @@ let ctx: Context;
 
 type AvaliacaoType = Avaliacao & AvaliacaoUtil;
 
-describe('Test Service', () => {
+describe('Test Curso Service', () => {
   beforeEach(() => {
     mockCtx = createMockContext();
     ctx = mockCtx as unknown as Context;

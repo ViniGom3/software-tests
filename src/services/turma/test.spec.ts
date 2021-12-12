@@ -12,7 +12,7 @@ type TurmaType = Turma & {
   };
 };
 
-describe('Test Service', () => {
+describe('Test Turma Service', () => {
   beforeEach(() => {
     mockCtx = createMockContext();
     ctx = mockCtx as unknown as Context;
