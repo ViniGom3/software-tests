@@ -35,7 +35,7 @@ describe('Test Aluno', () => {
     expect(response.body[0]).toHaveProperty('status', 'ATIVO');
   });
 
-  it('should return 200 and receive an aluno', async () => {
+  it('should return 200 and create an aluno', async () => {
     const aluno = {
       matricula: 0,
       status: 'ATIVO',
@@ -50,5 +50,21 @@ describe('Test Aluno', () => {
 
     expect(response.body).toHaveProperty('matricula', 0);
     expect(response.body).toHaveProperty('status', 'ATIVO');
+  });
+
+  it('should return 400 and receive a message error', async () => {
+    const aluno = {
+      matricula: 0,
+      status: 'ATIVO',
+    } as Aluno;
+
+    mockPrisma.prisma.aluno.findUnique.mockResolvedValue(aluno);
+
+    const response = await supertest(app)
+      .post('/aluno')
+      .send(aluno)
+      .expect(400);
+
+    expect(response.body).toHaveProperty('response', 'Aluno já cadastrado');
   });
 });
