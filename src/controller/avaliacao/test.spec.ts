@@ -55,4 +55,14 @@ describe('Test Avaliação', () => {
     expect(response.body).toHaveProperty('id', 0);
     expect(response.body).toHaveProperty('situacao', 'APROVADO');
   });
+
+  it('should return 200 and delete an aluno', async () => {
+    mockPrisma.prisma.avaliacao.findUnique.mockResolvedValueOnce(avaliacao);
+    mockPrisma.prisma.avaliacao.delete.mockResolvedValueOnce(avaliacao);
+
+    const response = await supertest(app).delete('/avaliacao/0').expect(200);
+
+    expect(response.body).toHaveProperty('id', 0);
+    expect(response.body).toHaveProperty('situacao', 'APROVADO');
+  });
 });
