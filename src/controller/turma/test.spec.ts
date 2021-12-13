@@ -58,4 +58,15 @@ describe('Test Turma', () => {
     expect(response.body).toHaveProperty('horario', '08:00 - 18:00');
     expect(response.body).toHaveProperty('qtdVagas', 20);
   });
+
+  it('should return 200 and delete an turma', async () => {
+    mockPrisma.prisma.turma.findUnique.mockResolvedValueOnce(turma);
+    mockPrisma.prisma.turma.delete.mockResolvedValueOnce(turma);
+
+    const response = await supertest(app).delete('/turma/0').expect(200);
+
+    expect(response.body).toHaveProperty('codigo', 0);
+    expect(response.body).toHaveProperty('horario', '08:00 - 18:00');
+    expect(response.body).toHaveProperty('qtdVagas', 20);
+  });
 });
