@@ -82,4 +82,13 @@ describe('Test Disciplina', () => {
     expect(response.body).toHaveProperty('codigo', 0);
     expect(response.body).toHaveProperty('nome', 'Linguagem de Programação 1');
   });
+
+  it('should return 404 and receive an message error', async () => {
+    const response = await supertest(app).delete('/disciplina/0').expect(404);
+
+    expect(response.body).toHaveProperty(
+      'response',
+      'Disciplina não encontrada',
+    );
+  });
 });
