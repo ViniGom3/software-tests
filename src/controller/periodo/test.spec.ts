@@ -43,4 +43,15 @@ describe('Test PeriodoLetivo', () => {
     expect(response.body[0]).toHaveProperty('id', 0);
     expect(response.body[0]).toHaveProperty('status', 'ATIVO');
   });
+
+  it('should return 200 and create an periodo', async () => {
+    mockPrisma.prisma.periodoLetivo.create.mockResolvedValueOnce(periodo);
+    const response = await supertest(app)
+      .post('/periodo')
+      .send(periodo)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('id', 0);
+    expect(response.body).toHaveProperty('status', 'ATIVO');
+  });
 });
