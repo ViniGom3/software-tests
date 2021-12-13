@@ -58,4 +58,18 @@ describe('Test Disciplina', () => {
     expect(response.body).toHaveProperty('codigo', 0);
     expect(response.body).toHaveProperty('nome', 'Linguagem de Programação 1');
   });
+
+  it('should return 400 and receive a message error', async () => {
+    mockPrisma.prisma.disciplina.findUnique.mockResolvedValueOnce(disciplina);
+
+    const response = await supertest(app)
+      .post('/disciplina')
+      .send(disciplina)
+      .expect(400);
+
+    expect(response.body).toHaveProperty(
+      'response',
+      'Disciplina já cadastrada',
+    );
+  });
 });
