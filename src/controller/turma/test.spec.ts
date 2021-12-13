@@ -1,0 +1,40 @@
+import { Turma } from '@prisma/client';
+import supertest from 'supertest';
+import { mockPrismaContext as mockPrisma } from '..';
+import { app } from '../..';
+
+let turma: Turma;
+let turmas: Turma[] = [];
+
+describe('Test Turma', () => {
+  beforeAll(() => {
+    process.env.NODE_ENV = 'test';
+
+    turma = {
+      codigo: 0,
+      disciplinaId: 0,
+      horario: '08:00 - 18:00',
+      nomeProfessor: 'Professor 0',
+      periodoLetivoId: 0,
+      qtdVagas: 20,
+    };
+
+    turmas.push(turma);
+  });
+
+  beforeEach(() => {
+    mockPrisma.prisma.turma.findUnique.mockClear();
+  });
+
+  afterAll(async () => {
+    jest.clearAllMocks();
+  });
+
+  it('should return 200 and receive empty array', async () => {
+    mockPrisma.prisma.turma.findMany.mockResolvedValueOnce([]);
+
+    const response = await supertest(app).get('/turma').expect(200);
+
+    expect(response.body).toEqual([]);
+  });
+});
