@@ -168,4 +168,40 @@ describe('Test Turma', () => {
     expect(response.body).toHaveProperty('matriculaAluno', 1);
     expect(response.body).toHaveProperty('codigoTurma', 1);
   });
+
+  it('should return 400 and receive error when  aluno already approved in this disciplina', async () => {
+    const mockedNeededPreRequisitos = {
+      Avaliacao: [
+        {
+          matriculaAluno: 1,
+        },
+        { matriculaAluno: 2 },
+        { matriculaAluno: 3 },
+      ],
+      Disciplina: {
+        preRequisitos: [{ codigo: 1 }, { codigo: 2 }, { codigo: 3 }],
+      },
+      qtdVagas: 20,
+    } as TurmaType;
+
+    const alreadyApproved = { matriculaAluno: 1, codigoTurma: 1 } as Avaliacao;
+
+    mockPrisma.prisma.turma.findUnique.mockResolvedValue(
+      mockedNeededPreRequisitos,
+    );
+    mockPrisma.prisma.avaliacao.count.mockResolvedValue(
+      mockedNeededPreRequisitos.Disciplina.preRequisitos.length,
+    );
+    mockPrisma.prisma.avaliacao.findFirst.mockResolvedValue(alreadyApproved);
+
+    const response = await supertest(app)
+      .post('/turma/0/inscricao')
+      .send(turma)
+      .expect(400);
+
+    expect(response.body).toHaveProperty(
+      'response',
+      'Aluno já está aprovado nesta disciplina',
+    );
+  });
 });
