@@ -72,4 +72,14 @@ describe('Test Disciplina', () => {
       'Disciplina já cadastrada',
     );
   });
+
+  it('should return 200 and delete an disciplina', async () => {
+    mockPrisma.prisma.disciplina.findUnique.mockResolvedValueOnce(disciplina);
+    mockPrisma.prisma.disciplina.delete.mockResolvedValueOnce(disciplina);
+
+    const response = await supertest(app).delete('/disciplina/0').expect(200);
+
+    expect(response.body).toHaveProperty('codigo', 0);
+    expect(response.body).toHaveProperty('nome', 'Linguagem de Programação 1');
+  });
 });
