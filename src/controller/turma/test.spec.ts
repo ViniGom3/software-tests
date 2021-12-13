@@ -75,4 +75,27 @@ describe('Test Turma', () => {
 
     expect(response.body).toHaveProperty('response', 'Turma não encontrada');
   });
+
+  it('should return 200 and update turma', async () => {
+    const updatedCurso = {
+      codigo: 0,
+      disciplinaId: 0,
+      horario: '12:00 - 18:00',
+      nomeProfessor: 'Professor 0',
+      periodoLetivoId: 0,
+      qtdVagas: 10,
+    } as Turma;
+
+    mockPrisma.prisma.turma.findUnique.mockResolvedValueOnce(turma);
+    mockPrisma.prisma.turma.update.mockResolvedValueOnce(updatedCurso);
+
+    const response = await supertest(app)
+      .patch('/turma')
+      .send(turma)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('codigo', 0);
+    expect(response.body).toHaveProperty('horario', '12:00 - 18:00');
+    expect(response.body).toHaveProperty('qtdVagas', 10);
+  });
 });
