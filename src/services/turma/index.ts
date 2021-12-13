@@ -25,7 +25,7 @@ export const deleteTurma = async (id: string, ctx: Context) => {
   const codigo = parseInt(id);
 
   if (!(await getTurmaById(codigo, ctx)))
-    throw new Exception(400, 'Turma não encontrada');
+    throw new Exception(404, 'Turma não encontrada');
 
   return ctx.prisma.turma.delete({
     where: {
@@ -36,7 +36,7 @@ export const deleteTurma = async (id: string, ctx: Context) => {
 
 export const updateTurma = async (turma: Turma, ctx: Context) => {
   if (!(await getTurmaById(turma.codigo, ctx)))
-    throw new Exception(400, 'Turma não encontrada');
+    throw new Exception(404, 'Turma não encontrada');
 
   return ctx.prisma.turma.update({
     where: {
