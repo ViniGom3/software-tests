@@ -91,4 +91,22 @@ describe('Test Disciplina', () => {
       'Disciplina não encontrada',
     );
   });
+
+  it('should return 200 and update disciplina', async () => {
+    const updatedCurso = {
+      codigo: 0,
+      nome: 'Linguagem de Programação I',
+    } as Disciplina;
+
+    mockPrisma.prisma.disciplina.findUnique.mockResolvedValueOnce(disciplina);
+    mockPrisma.prisma.disciplina.update.mockResolvedValueOnce(updatedCurso);
+
+    const response = await supertest(app)
+      .patch('/disciplina')
+      .send(disciplina)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('codigo', 0);
+    expect(response.body).toHaveProperty('nome', 'Linguagem de Programação I');
+  });
 });
