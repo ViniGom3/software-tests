@@ -90,4 +90,14 @@ describe('Test PeriodoLetivo', () => {
       'Período Letivo sobreposto',
     );
   });
+
+  it('should return 200 and delete an periodo', async () => {
+    mockPrisma.prisma.periodoLetivo.findUnique.mockResolvedValueOnce(periodo);
+    mockPrisma.prisma.periodoLetivo.delete.mockResolvedValueOnce(periodo);
+
+    const response = await supertest(app).delete('/periodo/0').expect(200);
+
+    expect(response.body).toHaveProperty('id', 0);
+    expect(response.body).toHaveProperty('status', 'ATIVO');
+  });
 });
