@@ -204,4 +204,36 @@ describe('Test Turma', () => {
       'Aluno já está aprovado nesta disciplina',
     );
   });
+
+  it('should return 400 and receive error when turma there are no vacancy', async () => {
+    const mockedNeededPreRequisitos = {
+      Avaliacao: [
+        {
+          matriculaAluno: 1,
+        },
+        { matriculaAluno: 2 },
+        { matriculaAluno: 3 },
+      ],
+      Disciplina: {
+        preRequisitos: [{ codigo: 1 }, { codigo: 2 }, { codigo: 3 }],
+      },
+      qtdVagas: 2,
+    } as TurmaType;
+
+    mockPrisma.prisma.turma.findUnique.mockResolvedValue(
+      mockedNeededPreRequisitos,
+    );
+    mockPrisma.prisma.avaliacao.count.mockResolvedValue(
+      mockedNeededPreRequisitos.Disciplina.preRequisitos.length,
+    );
+
+    mockPrisma.prisma.avaliacao.findFirst.mockResolvedValue(null);
+
+    const response = await supertest(app)
+      .post('/turma/0/inscricao')
+      .send(turma)
+      .expect(400);
+
+    expect(response.body).toHaveProperty('response', 'Turma lotada');
+  });
 });
