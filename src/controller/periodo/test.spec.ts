@@ -130,4 +130,18 @@ describe('Test PeriodoLetivo', () => {
     expect(response.body).toHaveProperty('id', 0);
     expect(response.body).toHaveProperty('status', 'INATIVO');
   });
+
+  it('should return 404 and receive an error message', async () => {
+    mockPrisma.prisma.periodoLetivo.findFirst.mockResolvedValueOnce(periodo);
+
+    const response = await supertest(app)
+      .patch('/periodo')
+      .send(periodo)
+      .expect(400);
+
+    expect(response.body).toHaveProperty(
+      'response',
+      'Período Letivo sobreposto',
+    );
+  });
 });
