@@ -108,4 +108,26 @@ describe('Test PeriodoLetivo', () => {
 
     expect(response.body).toHaveProperty('response', 'Periodo não encontrado');
   });
+
+  it('should return 200 and update periodo', async () => {
+    const updatedPeriodo = {
+      id: 0,
+      dataInicio: new Date(),
+      dataFim: new Date(),
+      status: 'INATIVO',
+    } as PeriodoLetivo;
+
+    mockPrisma.prisma.periodoLetivo.findUnique.mockResolvedValueOnce(periodo);
+    mockPrisma.prisma.periodoLetivo.update.mockResolvedValueOnce(
+      updatedPeriodo,
+    );
+
+    const response = await supertest(app)
+      .patch('/periodo')
+      .send(periodo)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('id', 0);
+    expect(response.body).toHaveProperty('status', 'INATIVO');
+  });
 });
