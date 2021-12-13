@@ -5,7 +5,7 @@ import { getIraMeanTurma, subscribeAlunoInTurma } from '.';
 let mockCtx: MockContext;
 let ctx: Context;
 
-type TurmaType = Turma & {
+export type TurmaType = Turma & {
   Avaliacao: Pick<Avaliacao, 'matriculaAluno'>[];
   Disciplina: {
     preRequisitos: Disciplina[];

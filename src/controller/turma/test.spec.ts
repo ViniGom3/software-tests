@@ -1,7 +1,9 @@
 import { Avaliacao, Turma } from '@prisma/client';
+import { response } from 'express';
 import supertest from 'supertest';
 import { mockPrismaContext as mockPrisma } from '..';
 import { app } from '../..';
+import { TurmaType } from '../../services/turma/test.spec';
 
 let turma: Turma;
 let turmas: Turma[] = [];
@@ -131,5 +133,39 @@ describe('Test Turma', () => {
       .expect(200);
 
     expect(response.body.mean).toBeCloseTo(7.3, 1);
+  });
+
+  it('should return 200 and subscribe aluno in turma', async () => {
+    const mockedNeededPreRequisitos = {
+      Avaliacao: [
+        {
+          matriculaAluno: 1,
+        },
+        { matriculaAluno: 2 },
+        { matriculaAluno: 3 },
+      ],
+      Disciplina: {
+        preRequisitos: [{ codigo: 1 }, { codigo: 2 }, { codigo: 3 }],
+      },
+      qtdVagas: 20,
+    } as TurmaType;
+
+    const subscribeInTurma = { matriculaAluno: 1, codigoTurma: 1 } as Avaliacao;
+
+    mockPrisma.prisma.turma.findUnique.mockResolvedValue(
+      mockedNeededPreRequisitos,
+    );
+    mockPrisma.prisma.avaliacao.count.mockResolvedValue(
+      mockedNeededPreRequisitos.Disciplina.preRequisitos.length,
+    );
+    mockPrisma.prisma.avaliacao.create.mockResolvedValue(subscribeInTurma);
+
+    const response = await supertest(app)
+      .post('/turma/0/inscricao')
+      .send(turma)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('matriculaAluno', 1);
+    expect(response.body).toHaveProperty('codigoTurma', 1);
   });
 });
