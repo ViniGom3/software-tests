@@ -61,3 +61,12 @@ $ npm run test:watch    # Isso manterá os testes executando.
 
 $ npm run test:integration    # Recomendado! Pois irá rodar os testes sequencialmente.
 ```
+
+## Testes
+
+Os testes podem ser localizados como vizinhos do código de referencia.
+
+Por exemplo:
+
+- src/controller/aluno/index.ts # Código responsável pelo controller de aluno
+- src/controller/aluno/test.spec.ts # Código responsável pelo teste de serviço de aluno
