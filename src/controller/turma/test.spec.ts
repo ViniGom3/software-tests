@@ -236,4 +236,36 @@ describe('Test Turma', () => {
 
     expect(response.body).toHaveProperty('response', 'Turma lotada');
   });
+
+  it('should return 400 and receive error when aluno is not able to turma', async () => {
+    const mockedNeededPreRequisitos = {
+      Avaliacao: [
+        {
+          matriculaAluno: 1,
+        },
+        { matriculaAluno: 2 },
+      ],
+      Disciplina: {
+        preRequisitos: [{ codigo: 1 }, { codigo: 2 }, { codigo: 3 }],
+      },
+      qtdVagas: 20,
+    } as TurmaType;
+
+    mockPrisma.prisma.turma.findUnique.mockResolvedValue(
+      mockedNeededPreRequisitos,
+    );
+    mockPrisma.prisma.avaliacao.count.mockResolvedValue(
+      mockedNeededPreRequisitos.Avaliacao.length,
+    );
+
+    const response = await supertest(app)
+      .post('/turma/0/inscricao')
+      .send(turma)
+      .expect(400);
+
+    expect(response.body).toHaveProperty(
+      'response',
+      'Aluno não está apto para a turma',
+    );
+  });
 });
