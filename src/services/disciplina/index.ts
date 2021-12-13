@@ -43,7 +43,7 @@ export const updateDisciplina = async (
   disciplina: Disciplina,
   ctx: Context,
 ) => {
-  if (!(disciplina.codigo && (await getDisciplinaById(disciplina.codigo, ctx))))
+  if (!(await getDisciplinaById(disciplina.codigo, ctx)))
     throw new Exception(404, 'Disciplina não encontrada');
 
   return ctx.prisma.disciplina.update({
