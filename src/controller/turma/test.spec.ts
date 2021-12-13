@@ -69,4 +69,10 @@ describe('Test Turma', () => {
     expect(response.body).toHaveProperty('horario', '08:00 - 18:00');
     expect(response.body).toHaveProperty('qtdVagas', 20);
   });
+
+  it('should return 404 and receive an message error', async () => {
+    const response = await supertest(app).delete('/turma/0').expect(404);
+
+    expect(response.body).toHaveProperty('response', 'Turma não encontrada');
+  });
 });
