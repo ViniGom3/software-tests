@@ -73,7 +73,7 @@ export const deletePeriodo = async (id: string, ctx: Context) => {
   const periodoId = parseInt(id);
 
   if (!(await getPeriodoById(periodoId, ctx)))
-    throw new Exception(400, 'Periodo não encontrado');
+    throw new Exception(404, 'Periodo não encontrado');
 
   return ctx.prisma.periodoLetivo.delete({ where: { id: periodoId } });
 };

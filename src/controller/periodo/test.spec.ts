@@ -100,4 +100,12 @@ describe('Test PeriodoLetivo', () => {
     expect(response.body).toHaveProperty('id', 0);
     expect(response.body).toHaveProperty('status', 'ATIVO');
   });
+
+  it('should return 404 and receive an message error', async () => {
+    const response = await supertest(app).delete('/periodo/0').expect(404);
+
+    mockPrisma.prisma.periodoLetivo.findUnique.mockResolvedValue(periodo);
+
+    expect(response.body).toHaveProperty('response', 'Periodo não encontrado');
+  });
 });
