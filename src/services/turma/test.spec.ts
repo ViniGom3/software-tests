@@ -146,7 +146,7 @@ describe('Test Turma Service', () => {
     }
   });
 
-  it('should throw error when turma there are no vacancy', async () => {
+  it('should throw error when aluno is not able to turma', async () => {
     const mockedNeededPreRequisitos = {
       Avaliacao: [
         {
