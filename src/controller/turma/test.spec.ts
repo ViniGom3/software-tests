@@ -1,4 +1,4 @@
-import { Turma } from '@prisma/client';
+import { Avaliacao, Turma } from '@prisma/client';
 import supertest from 'supertest';
 import { mockPrismaContext as mockPrisma } from '..';
 import { app } from '../..';
@@ -106,5 +106,30 @@ describe('Test Turma', () => {
       .expect(404);
 
     expect(response.body).toHaveProperty('response', 'Turma não encontrada');
+  });
+
+  it('should return 200 and ira from turma', async () => {
+    const turmaWithGrauFinal = [
+      {
+        grauFinal: 10,
+      },
+      {
+        grauFinal: 5,
+      },
+      {
+        grauFinal: 7,
+      },
+    ] as unknown as Avaliacao[];
+
+    mockPrisma.prisma.avaliacao.findMany.mockResolvedValueOnce(
+      turmaWithGrauFinal,
+    );
+
+    const response = await supertest(app)
+      .get('/turma/0/media')
+      .send(turma)
+      .expect(200);
+
+    expect(response.body.mean).toBeCloseTo(7.3, 1);
   });
 });
