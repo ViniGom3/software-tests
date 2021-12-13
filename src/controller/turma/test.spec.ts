@@ -268,4 +268,15 @@ describe('Test Turma', () => {
       'Aluno não está apto para a turma',
     );
   });
+
+  it('should return 400 and receive error when turma is not found', async () => {
+    mockPrisma.prisma.turma.findUnique.mockResolvedValue(null);
+
+    const response = await supertest(app)
+      .post('/turma/0/inscricao')
+      .send(turma)
+      .expect(404);
+
+    expect(response.body).toHaveProperty('response', 'Turma não encontrada');
+  });
 });
