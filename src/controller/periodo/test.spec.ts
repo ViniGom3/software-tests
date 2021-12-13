@@ -35,4 +35,12 @@ describe('Test PeriodoLetivo', () => {
 
     expect(response.body).toEqual([]);
   });
+
+  it('should return 200 and receive an array with an periodo', async () => {
+    mockPrisma.prisma.periodoLetivo.findMany.mockResolvedValueOnce(periodos);
+    const response = await supertest(app).get('/periodo').expect(200);
+
+    expect(response.body[0]).toHaveProperty('id', 0);
+    expect(response.body[0]).toHaveProperty('status', 'ATIVO');
+  });
 });
