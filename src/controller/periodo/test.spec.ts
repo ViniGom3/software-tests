@@ -76,4 +76,18 @@ describe('Test PeriodoLetivo', () => {
       'Data de início não pode ser maior que a data de fim',
     );
   });
+
+  it('should return 400 and receive a message error', async () => {
+    mockPrisma.prisma.periodoLetivo.findFirst.mockResolvedValueOnce(periodo);
+
+    const response = await supertest(app)
+      .post('/periodo')
+      .send(periodo)
+      .expect(400);
+
+    expect(response.body).toHaveProperty(
+      'response',
+      'Período Letivo sobreposto',
+    );
+  });
 });
