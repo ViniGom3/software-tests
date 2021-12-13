@@ -45,7 +45,7 @@ $ npm run dev
 
     # ou
 
-$ npm run watch:debug   # Isso permitirá executar o debugger
+$ npm run watch:debug   # Isso permitirá executar o debugger.
 ```
 
 Para rodar os testes:
@@ -55,5 +55,9 @@ $ npm run test
 
     # ou
 
-$ npm run test:watch    # Isso manterá os testes executando
+$ npm run test:watch    # Isso manterá os testes executando.
+
+    # ou
+
+$ npm run test:integration    # Recomendado! Pois irá rodar os testes sequencialmente.
 ```
