@@ -70,3 +70,11 @@ Por exemplo:
 
 - src/controller/aluno/index.ts # Código responsável pelo controller de aluno
 - src/controller/aluno/test.spec.ts # Código responsável pelo teste de serviço de aluno
+
+## Organização
+
+Dividi o projeto em 3 pastas principais:
+
+- controller, onde estão os controllers
+- services, onde estão os serviços usados pelos controllers
+- utils, onde estão algumas funções comportilhadas por serviços diferentes
