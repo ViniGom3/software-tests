@@ -46,4 +46,16 @@ describe('Test Turma', () => {
     expect(response.body[0]).toHaveProperty('horario', '08:00 - 18:00');
     expect(response.body[0]).toHaveProperty('qtdVagas', 20);
   });
+
+  it('should return 200 and create an turma', async () => {
+    mockPrisma.prisma.turma.create.mockResolvedValueOnce(turma);
+    const response = await supertest(app)
+      .post('/turma')
+      .send(turma)
+      .expect(200);
+
+    expect(response.body).toHaveProperty('codigo', 0);
+    expect(response.body).toHaveProperty('horario', '08:00 - 18:00');
+    expect(response.body).toHaveProperty('qtdVagas', 20);
+  });
 });
