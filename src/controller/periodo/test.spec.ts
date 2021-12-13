@@ -54,4 +54,26 @@ describe('Test PeriodoLetivo', () => {
     expect(response.body).toHaveProperty('id', 0);
     expect(response.body).toHaveProperty('status', 'ATIVO');
   });
+
+  it('should return 400 and receive a message error', async () => {
+    const now = new Date();
+    let yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const periodoBug = {
+      id: 0,
+      dataInicio: now,
+      dataFim: yesterday,
+      status: 'ATIVO',
+    } as PeriodoLetivo;
+
+    const response = await supertest(app)
+      .post('/periodo')
+      .send(periodoBug)
+      .expect(400);
+
+    expect(response.body).toHaveProperty(
+      'response',
+      'Data de início não pode ser maior que a data de fim',
+    );
+  });
 });
